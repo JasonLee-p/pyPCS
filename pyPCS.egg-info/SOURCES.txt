@@ -1,0 +1,13 @@
+README.md
+setup.py
+pyPCS/__init__.py
+pyPCS/_basicData.py
+pyPCS/_player.py
+pyPCS/basicGenerator.py
+pyPCS/chorder.py
+pyPCS/piecesGenerator.py
+pyPCS/pitchSegment.py
+pyPCS.egg-info/PKG-INFO
+pyPCS.egg-info/SOURCES.txt
+pyPCS.egg-info/dependency_links.txt
+pyPCS.egg-info/top_level.txt
