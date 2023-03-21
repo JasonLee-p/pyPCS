@@ -202,36 +202,66 @@ Pitch segment 意为音高截段，相关名词可以参考文献《Introduction
 PitchSegment 是一个用于处理有序的音集的 Python 类，这个类包含了以下属性和方法：
 
 ### 属性
+
 segment：包括音高和时值两个列表。
+
 style：节奏风格。
+
 pitch_set：音高列表。
+
 duration_set：时值列表（拍）。
+
 length：音符数量。
+
 total_duration：总时值（拍）。
+
 w_average：加权平均音高。
+
 pitch_tend：音高趋向性。
+
 rhythm_intensity_tend：密度趋向性。
+
 ### 方法
+
 生成新的音集
+
 new_segment(note_num: int, total_duration: float, first_note: int, note_scale: float, style: str)：生成一个新的音集，如果当前音集不为空，则会抛出 RuntimeError 异常。
 变换音集
+
 Transposition(add_pitch: int)：变换音集的音高。
+
 __sub__(sub_pitch: int)：变换音集的音高。
+
 __mod__(number: int)：变换音集的音高。
+
 __setitem__(key, value)：重置音集的某一个音高。
+
 __reversed__()：将音集倒序。
+
 get_pc_segment()：将音集转化为音高类别集。
+
 change_rhyme(total_duration: float, new_style: str)：更改音集的韵律。
+
 get_counterpoint()：使用对位法生成一个包含两个声部的音集。
+
 ### 获取截段属性
+
 get_average()：获取加权平均音高。
+
 get_pitch_tend()：获取音高趋向性。
+
 get_rhythm_intensity_tend()：获取密度趋向性。
+
 ### 魔术方法
+
 __hash__()：用于将音集转化为可哈希的对象。
+
 __eq__(other)：判断两个音集是否相等。
+
 __len__()：获取音集中音符数量。
+
 __iter__()：迭代器，返回一个包含音高和时值的元组。
+
 __add__(add_pitch: int)：将音集中的音高升高一定的半音数。
 
 ### 示例代码：
