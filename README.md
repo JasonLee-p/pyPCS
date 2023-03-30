@@ -25,7 +25,7 @@ This project aims to create a powerful tool for complex music analysing and tiny
 
 ## Install
 
-The latest release (v0.0.1 but still unfinished) is available on PyPI, and you can install it by saying
+The latest release (v0.0.0 but still unfinished) is available on PyPI, and you can install it by saying
 
 ```sh
 python3 -m pip install pyPCS
@@ -172,7 +172,7 @@ pyPCS旨在创建 一个强大的音乐分析工具 和 一个小型音乐片段
 
 该模块中会调用numpy模块，pygame模块与播放midi有关的部分。
 
-pyPCS最新的版本（v0.0.5 但仍未完成）已经上传到了PyPI，可以直接使用pip安装：
+pyPCS最新的版本（v0.0.0 但仍未完成）已经上传到了PyPI，可以直接使用pip安装：
 
 ```sh
 python3 -m pip install pyPCS
