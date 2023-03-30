@@ -1,7 +1,7 @@
 # pyPCS —— A professional post tonal music analyzer (unfinished)
 ### pyPCS —— 专业的后调性音乐分析工具（未完成）
 
-[![Release](https://img.shields.io/badge/Release-ver0.0.5-brightgreen.svg?style=flat-square)](https://github.com/JasonLee-p/pyPCS/tree/main)
+[![Release](https://img.shields.io/badge/Release-ver0.0.0-brightgreen.svg?style=flat-square)](https://github.com/JasonLee-p/pyPCS/tree/main)
 
 ## Choosing Language
 - [English](#English version)
