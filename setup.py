@@ -10,7 +10,7 @@ setuptools.setup(
     author="Jason Lee",
     author_email="2593292614@qq.com",
     description="",
-    long_description=open('README.md', 'r').read(),
+    long_description=open('README.md', 'r', encoding="utf-8").read(),
     long_description_content_type='text/markdown',
     url="https://github.com",
     install_requires=[
