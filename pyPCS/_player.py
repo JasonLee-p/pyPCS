@@ -3,7 +3,7 @@
 """
 # import pygame
 import pygame.midi as pm
-import pygame.time.sleep
+import pygame.time
 
 pm.init()  # init midi _player
 BPM = 120
@@ -23,16 +23,16 @@ def play_note(_player_, note, beats, bpm=80):
         del _player
 
 
-def play_pitch_segment(_player, pitch_segment, bpm=80, instrument='Piano'):
+def play_pitch_segment(_player, pitchSegment, bpm=80, instrument='Piano'):
     """
     :param _player: Pygame.midi.Output(int) variable.
-    :param pitch_segment: Pitch segment, duration_list is included
+    :param pitchSegment: PitchSegment class object.
     :param bpm: Beats per minutes.
     :param instrument: 'Piano' or 'Strings'
     :return: None
     """
-    pitch_set = pitch_segment[0]
-    duration_set = pitch_segment[1]
+    pitch_set = pitchSegment.segment[0]
+    duration_set = pitchSegment.segment[1]
     if _player is None:
         _player = pm.Output(0)
     if instrument == 'Piano':

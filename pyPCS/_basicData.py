@@ -1,9 +1,7 @@
 """
-This
+This module defines some decorators,
+and stores the map between notes and value, chord name and chroma vectors, and so on.
 """
-
-
-""" 装饰器：    """
 
 
 # 打印函数运行的时间
@@ -431,8 +429,8 @@ chords_chroma_vector = {
     # TODO: unfinished
 }
 
-""" The circle of fifth value of a pitch-class.
-    五度圈音级集和：                                """
+# The circle of fifth value of a pitch-class.
+# 五度圈音级集和：
 note_cof_value = {0: 0, 1: -5, 2: 2, 3: -3, 4: 4, 5: -1, 6: 6, 7: 1, 8: -4, 9: 3, 10: -2, 11: 5}
 # 紧张度计算的音程预设值
 note_tension = {0: 0, 1: 32, 2: 8, 3: 4, 4: 2, 5: 1, 6: 16, 7: 1, 8: 2, 9: 4, 10: 8, 11: 32}
