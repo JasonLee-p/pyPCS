@@ -36,7 +36,7 @@ python3 -m pip install pyPCS
 After installation, you can simply use the module by
 
 ```sh
-import pypcs
+import pyPCS
 ```
 ## (I) class PitchSegment
 
@@ -183,7 +183,7 @@ python3 -m pip install pyPCS
 用pip安装完之后，直接在文件中用import语句导入模块
 
 ```sh
-import pypcs
+import pyPCS
 ```
 
 ## （一）类 PitchSegment
