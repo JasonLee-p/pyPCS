@@ -25,10 +25,10 @@ This project aims to create a powerful tool for complex music analysing and tiny
 
 ## Install
 
-The latest release (v0.0.5 but still unfinished) is available on PyPI, and you can install it by saying
+The latest release (v0.0.1 but still unfinished) is available on PyPI, and you can install it by saying
 
 ```sh
-python3 -m pip install pyPCS
+python3 -m pip install pypcs
 ```
 
 ## Usage
@@ -36,33 +36,30 @@ python3 -m pip install pyPCS
 After installation, you can simply use the module by
 
 ```sh
-import pyPCS
+import pypcs
 ```
-## (I)class PitchSegment
+## (I) class PitchSegment
 
 If you are not clear about its meaning, you can read "Introduction to Post-Tonal Theory" written by Joseph N. Straus.
 
-There are two ways to initialize an object：
+Initialize an object using：
 
 ```sh
-# 1.Assign a value directly：
-segment = pyPCS.PitchSegment([[60,65,58,69], ['1','1','3/2','1/2']])
-# The argument is a list，inside witch the first arg is note list and the second one is a duration list.
-# 2.Create an empty pitch segment and then randomly assign it: (Attention: Func new_segment is available only when the object's segment is empty.)
-segment = pyPCS.PitchSegment(None)
-segment.new_segment(
-  note_num=4,  # Number of notes
-  total_duration=4,  # Total duration (beats)
-  first_note=60,  # The first note's value
-  note_scale=4,  # Standard deviation of generated note values
-  style='smooth')  # The style of rhyme (Now there are three styles.)
+# Assign a value directly：
+series = pypcs.pitch_segment([[60,65,58,69], ['1','1','3/2','1/2']])
 ```
+Output:
+```sh
+# Then it requires you to name it
+Enter the name of the series tree:
+```
+(Let's say that you name it as "original_s", we will stick with the name to show.)
 
 ——Attention：In order to make this module compatible to module mido，we defined C4 as 60 and so on for the other notes.
 
 For example, G4 is 67.
 
-——The length of note list should be equal to duration list，and larger than 2。
+——The length of note list should be equal to duration list，and larger than 2.
 
 ——In order to maintain the accuracy of calculations，the elements in duration list should be string variable,
 
@@ -70,11 +67,11 @@ like '1/2', '4/3', '1'.
 
 ### 1.Get length: len()
 ```sh
-s_len = len(segment)  # Get number of notes
+s_len = len(series)  # Get number of notes
 ```
 ### 2.Using index to get its value:
 ```sh
-s_1 = segment[1]  # It will return a tuple, inside of witch are note and its duration.
+s_1 = series[1]  # It will return a tuple, inside of witch are note and its duration.
 print(s_1)
 ```
 Output：
@@ -83,7 +80,7 @@ Output：
 ```
 ### 3.Use it as iterator:
 ```sh
-for i, j in segment:
+for i, j in series:
     print(i, end=',')
     print(j)
 ```
@@ -95,40 +92,36 @@ Output：
 69,1/2
 ```
 ### 4.Transposition
-It returns three vars: the new object after shifting, the parent object, and method of the transform.
+It returns the new object after shifting.
 ```sh
 # Use the "+" or "-" operator to shift：
-segment_T1, original_segment, transform_type = segment - 1
+segment_T1 = series - 1
 # Use method Transposition() (Not recommended)
-segment_T1, original_segment, transform_type = segment.Transposition(-1)
+segment_T1 = series.Transposition(-1)
 
-print(segment_T1.segment)  # Attribute 'segment' will return the object's segment list (like [[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]).
-print(original_segment.segment)
-print(transform_type)
+print(segment_T1.series)  # Attribute 'series' will return the object'pypcs series list (like [[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]).
+print(segment_T1.parent.series)  # Attribute 'parent' will return the object'pypcs parent series object.
+print(segment_T1.name)  # Attribute 'parent' will return the object'pypcs name.
 ```
 Output：
 ```sh
-[[59, 64, 57, 68], ['1', '1', '3/2', '1/2']]  # new segment
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]  # original segment
-Transposition-1  # 操作方法
+[[59, 64, 57, 68], ['1', '1', '3/2', '1/2']]
+[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
+original_s Transposition-1
 ```
 ### 5.Retrograde with rhyme
-It returns three vars: the new object after shifting, the parent object, and method of the transform.
+It returns the new object after shifting.
 ```sh
 # Use method Reversed() to shift
-segment_R, original_segment, transform_type = reversed(segment)
+segment_R = reversed(series)
 # Use method Retrograde_with_rhyme()
-segment_R, original_segment, transform_type = segment.Retrograde_with_rhyme()
+segment_R = series.Retrograde_with_rhyme()
 
-print(segment_R.segment)
-print(original_segment.segment)
-print(transform_type)
+print(segment_R.series)
 ```
 Output：
 ```sh
 [[69, 58, 65, 60], ['1/2', '3/2', '1', '1']]  # Duration list reversed too
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
-Retrograde with rhyme
 ```
 
 Pass an int argument to the function，and it will do transposition after retrograding.
@@ -140,19 +133,15 @@ Output：
 [[72, 61, 68, 63], ['1/2', '3/2', '1', '1']]
 ```
 ### 6.Retrograde without rhyme
-It returns three vars: the new object after shifting, the parent object, and method of the transform.
+It returns : the new object after shifting.
 ```sh
 # Using method Retrograde_without_rhyme()
-segment_R, original_segment, transform_type = segment.Retrograde_without_rhyme()
-print(segment_R.segment)
-print(original_segment.segment)
-print(transform_type)
+segment_R  = series.Retrograde_without_rhyme()
+print(segment_R.series)
 ```
 Output：
 ```sh
 [[69, 58, 65, 60], ['1', '1', '3/2', '1/2']]  # Duration list isn't reversed
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
-Retrograde without rhyme
 ```
 Pass an int argument to the function，and it will do transposition after retrograding.
 ```sh
@@ -166,6 +155,7 @@ Output：
 
 PCS 指的是音级集和（Pitch-class set)，这个概念在后调性音乐理论中已经被广泛地使用了。
 
+因此借PCS之名。
 ## 目录
 
 - [背景](#一.背景)
@@ -174,7 +164,7 @@ PCS 指的是音级集和（Pitch-class set)，这个概念在后调性音乐理
 
 ## 一.背景
 
-现如今，AI正在风口浪尖，其在曲目分析和作曲方面也有广阔的前景
+现如今，AI爆火，其在曲目分析和作曲方面也有广阔的前景
 
 pyPCS旨在创建 一个强大的音乐分析工具 和 一个小型音乐片段生成器（基于随机生成后条件筛选）
 
@@ -185,7 +175,7 @@ pyPCS旨在创建 一个强大的音乐分析工具 和 一个小型音乐片段
 pyPCS最新的版本（v0.0.5 但仍未完成）已经上传到了PyPI，可以直接使用pip安装：
 
 ```sh
-python3 -m pip install pyPCS
+python3 -m pip install pypcs
 ```
 
 ## 三.使用
@@ -193,7 +183,7 @@ python3 -m pip install pyPCS
 用pip安装完之后，直接在文件中用import语句导入模块
 
 ```sh
-import pyPCS
+import pypcs
 ```
 
 ## （一）类 PitchSegment
@@ -204,8 +194,6 @@ PitchSegment 是一个用于处理有序的音集的 Python 类，这个类包�
 ### 属性
 
 segment：包括音高和时值两个列表。
-
-style：节奏风格。
 
 pitch_set：音高列表。
 
@@ -223,20 +211,7 @@ rhythm_intensity_tend：密度趋向性。
 
 ### 方法
 
-生成新的音集
-
-new_segment(note_num: int, total_duration: float, first_note: int, note_scale: float, style: str)：生成一个新的音集，如果当前音集不为空，则会抛出 RuntimeError 异常。
-变换音集
-
 Transposition(add_pitch: int)：变换音集的音高。
-
-__sub__(sub_pitch: int)：变换音集的音高。
-
-__mod__(number: int)：变换音集的音高。
-
-__setitem__(key, value)：重置音集的某一个音高。
-
-__reversed__()：将音集倒序。
 
 get_pc_segment()：将音集转化为音高类别集。
 
@@ -254,30 +229,29 @@ get_rhythm_intensity_tend()：获取密度趋向性。
 
 ### 魔术方法
 
-__hash__()：用于将音集转化为可哈希的对象。
+作为迭代器使用：返回一个包含音高和时值的元组。
 
-__eq__(other)：判断两个音集是否相等。
+加减运算符：返回一个音符被加键后的新对象，不会改变原来的类对象的值。
 
-__len__()：获取音集中音符数量。
+更改索引值：改变音集的某一个音高，返回一个新的类对象，不会改变原来的类对象。
 
-__iter__()：迭代器，返回一个包含音高和时值的元组。
+len()：获取音集中音符数量。
 
-__add__(add_pitch: int)：将音集中的音高升高一定的半音数。
+reversed()：将音集倒序（包括节奏），返回一个新的类对象，不会改变原来的类对象。
+
 
 ### 示例代码：
 ```sh
 # 直接赋值法：
-segment = pyPCS.PitchSegment([[60,65,58,69], ['1','1','3/2','1/2']])  # 参数为两个列表组成的列表，第一个为音符表，第二个为时值表。
-# 先创建对象后随机赋值法：（注意，一个对象只能在segment为空时使用new_segment函数）
-"""
-segment = pyPCS.PitchSegment(None)
-segment.new_segment(
-  note_num=4,  # 音符数量
-  total_duration=4,  # 总时值（拍）
-  first_note=60,  # 第一个音符（数值）
-  note_scale=4,  # 随机数方差
-  style='smooth')  # 类型（暂时有三种）"""
+series = pypcs.pitch_segment([[60,65,58,69], ['1','1','3/2','1/2']])  # 参数为两个列表组成的列表，第一个为音符表，第二个为时值表。
 ```
+输出：
+```sh
+# Then it requires you to name it
+Enter the name of the series tree:
+```
+
+（假设你以"original_s"为其名称）
 
 ——注意：为了和mido库进行对接，我们将C4（中央C）定为60，其他的音符依此类推。比如：G4为67。
 
@@ -287,11 +261,11 @@ segment.new_segment(
 
 ### 1.获取长度len()
 ```sh
-s_len = len(segment)  # 获取其音符数量
+s_len = len(series)  # 获取其音符数量
 ```
 ### 2.使用索引（但暂时不能使用索引对其进行重新赋值）
 ```sh
-s_1 = segment[1]  # 会返回一个包含音符及其时值的元组
+s_1 = series[1]  # 会返回一个包含音符及其时值的元组
 print(s_1)
 ```
 输出：
@@ -300,7 +274,7 @@ print(s_1)
 ```
 ### 3.作为迭代器
 ```sh
-for i, j in segment:
+for i, j in series:
     print(i, end=',')
     print(j)
 ```
@@ -312,65 +286,53 @@ for i, j in segment:
 69,1/2
 ```
 ### 4.移位操作T（Transposition）
-该方法返回三个值：移位后的新实例，父实例，转换方法
+该方法返回移位后创建的新实例对象
 ```sh
 # 使用"+"或"-"运算符进行移位
-segment_T1, original_segment, transform_type = segment - 1  # 返回三个值：移位后的新实例，父实例，转换方法
+segment_T1 = series - 1  # 返回三个值：移位后的新实例，父实例，转换方法
 # 使用内置方法Transposition（不推荐）
-segment_T1, original_segment, transform_type = segment.Transposition(-1)
+segment_T1 = series.Transposition(-1)
 
-print(segment_T1.segment)  # 属性segment会返回新建实例时传入的segment列表
-print(original_segment.segment)
-print(transform_type)
+print(segment_T1.series)  # 属性segment会返回新建实例时传入的segment列表
 ```
 输出：
 ```sh
 [[59, 64, 57, 68], ['1', '1', '3/2', '1/2']]  # 新segment
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]  # 原segment
-Transposition-1  # 操作方法
 ```
 ### 5.翻转操作R（Retrograde with rhyme）
-该方法返回三个值：移位后的新实例，父实例，转换方法
+该方法返回翻转后创建的新实例对象
 ```sh
 # 使用方法Reversed()进行移位
-segment_R, original_segment, transform_type = reversed(segment)
+segment_R = reversed(series)
 # 使用方法Retrograde_with_rhyme()
-segment_R, original_segment, transform_type = segment.Retrograde_with_rhyme()
-print(segment_R.segment)
-print(original_segment.segment)
-print(transform_type)
+segment_R = series.Retrograde_with_rhyme()
+print(segment_R.series)
 ```
 输出：
 ```sh
 [[69, 58, 65, 60], ['1/2', '3/2', '1', '1']]  # 时值随之翻转
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
-Retrograde with rhyme
 ```
 
 传入参数，使其翻转后直接做移位变换（T）
 ```sh
-print(segment.Retrograde_with_rhyme(3))
+print(series.Retrograde_with_rhyme(3))
 ```
 输出：
 ```sh
 [[72, 61, 68, 63], ['1/2', '3/2', '1', '1']]
 ```
 ### 6.翻转操作R（Retrograde without rhyme）
-该方法返回三个值：移位后的新实例，父实例，转换方法
+该方法返回翻转后创建的新实例对象
 ```sh
 # 使用方法Retrograde_without_rhyme()
-segment_R, original_segment, transform_type = segment.Retrograde_without_rhyme()
-print(segment_R.segment)
-print(original_segment.segment)
-print(transform_type)
+segment_R = series.Retrograde_without_rhyme()
+print(segment_R.series)
 ```
 输出：
 ```sh
 [[69, 58, 65, 60], ['1', '1', '3/2', '1/2']]  # 时值不随之翻转
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
-Retrograde without rhyme
 ```
-传入参数，使其翻转后直接做移位变换（T）
+可以传入参数，使其翻转后直接做移位变换（T）
 ```sh
 print(egment.Retrograde_without_rhyme(3))
 ```
@@ -379,47 +341,35 @@ print(egment.Retrograde_without_rhyme(3))
 [[72, 61, 68, 63], ['1', '1', '3/2', '1/2']]
 ```
 ### 7.倒影操作I（Inversion）
-该方法返回三个值：移位后的新实例，父实例，转换方法
+该方法返回倒影后创建的新实例对象
 ```sh
 # 使用方法Inversion()
-segment_I, original_segment, transform_type = segment.Inversion(60)
-    print(segment_I.segment)
-    print(original_segment.segment)
-    print(transform_type)
+segment_I = series.Inversion(60)
+    print(segment_I.series)
 ```
 输出：
 ```sh
 [[60, 55, 62, 51], ['1', '1', '3/2', '1/2']]
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
-Inversion60
 ```
 ### 8.翻转倒影操作RI（Retrograde Inversion）
-该方法返回三个值：移位后的新实例，父实例，转换方法
+该方法返回翻转倒影后创建的新实例对象
 ```sh
 # 使用方法RetrogradeInversion()
-segment_RI, original_segment, transform_type = segment.RetrogradeInversion(60)
-    print(segment_RI.segment)
-    print(original_segment.segment)
-    print(transform_type)
+segment_RI = series.RetrogradeInversion(60)
+    print(segment_RI.series)
 ```
 输出：
 ```sh
 [[60, 55, 62, 51], ['1', '1', '3/2', '1/2']]
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
-Inversion60
 ```
 ### 9.轮转操作（Rotation without rhyme）
-该方法返回三个值：移位后的新实例，父实例，转换方法
+该方法返回移位后创建的新实例对象
 ```sh
 # 使用方法Rotation_without_rhyme()
-segment_I, original_segment, transform_type = segment.Rotation_without_rhyme(60)
-    print(segment_I.segment)
-    print(original_segment.segment)
-    print(transform_type)
+segment_I = series.Rotation_without_rhyme(60)
+print(segment_I.series)
 ```
 输出：
 ```sh
 [[60, 55, 62, 51], ['1', '1', '3/2', '1/2']]
-[[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
-Inversion60
 ```

@@ -11,7 +11,7 @@ def _prt_func_time(func):
         from time import time
         st = time()
         _return = func(*args, **kwargs)
-        print("Time: \033[0;33m" + str(time()-st) + "s\033[0m")
+        print("Time: \033[0;33m" + str(time()-st) + "pypcs\033[0m")
         return _return
     return f
 

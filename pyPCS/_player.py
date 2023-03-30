@@ -1,12 +1,12 @@
 """
     This module defines how to play various music elements (in midi file).
 """
-# import pygame
+from __future__ import annotations
 import pygame.midi as pm
 import pygame.time
 
 pm.init()  # init midi _player
-BPM = 120
+BPM = 80
 
 
 def play_note(_player_, note, beats, bpm=80):
@@ -23,22 +23,29 @@ def play_note(_player_, note, beats, bpm=80):
         del _player
 
 
-def play_pitch_segment(_player, pitchSegment, bpm=80, instrument='Piano'):
+def play_pitch_segment(_player, pitch_segment, bpm=80, instrument='Piano'):
     """
     :param _player: Pygame.midi.Output(int) variable.
-    :param pitchSegment: PitchSegment class object.
+    :param pitch_segment: PitchSegment class object or a list of pitch list and duration list.
     :param bpm: Beats per minutes.
     :param instrument: 'Piano' or 'Strings'
     :return: None
     """
-    pitch_set = pitchSegment.segment[0]
-    duration_set = pitchSegment.segment[1]
+    print("Playing...")
+    # initialize
+    if type(pitch_segment) is list:
+        pitch_set = pitch_segment[0]
+        duration_set = pitch_segment[1]
+    else:
+        pitch_set = pitch_segment.segment[0]
+        duration_set = pitch_segment.segment[1]
     if _player is None:
         _player = pm.Output(0)
     if instrument == 'Piano':
         _player.set_instrument(0)
     if instrument == 'Strings':
         _player.set_instrument(44)
+
     for i in range(len(pitch_set)):
         pitch = pitch_set[i]
         duration = str(duration_set[i])
