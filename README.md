@@ -1,7 +1,7 @@
 # pyPCS —— A professional post tonal music analyzer (unfinished)
 ### pyPCS —— 专业的无调性音乐分析工具（未完成）
 
-[![Release](https://img.shields.io/badge/Release-ver0.0.0-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
+[![Release](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
 
 ## Choosing Language
 - [English](#English version)
@@ -172,7 +172,7 @@ pyPCS旨在创建 一个强大的音乐分析工具 和 一个小型音乐片段
 
 该模块中会调用numpy模块，pygame模块与播放midi有关的部分。
 
-pyPCS最新的版本（v0.0.5 但仍未完成）已经上传到了PyPI，可以直接使用pip安装：
+pyPCS最新的版本（v0.0.1 但仍未完成）已经上传到了PyPI，可以直接使用pip安装：
 
 ```sh
 python3 -m pip install pyPCS
