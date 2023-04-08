@@ -3,7 +3,7 @@
 
 [![Release](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
 
-[![Release](https://img.shields.io/badge/Worklog-till 4.7-brightgreen.svg?style=flat-square)](https://github.com/JasonLee-p/pyPCS/blob/master/worklog/Jason%20Lee/2023-4.md)
+[![Release](https://img.shields.io/badge/Worklog-till 4.7-blue.svg?style=flat-square)](https://github.com/JasonLee-p/pyPCS/blob/master/worklog/Jason%20Lee/2023-4.md)
 
 ## Choosing Language
 - [English](#English version)
