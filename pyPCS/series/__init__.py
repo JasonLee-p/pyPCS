@@ -4,21 +4,23 @@ series
 (unfinished)
 
 Provides
-  1. Various class object of post-tonal music items
+  1. Various class object_ of post-tonal music items
   2. Easy transpositions over post-tonal music items
 
 Available packages:
 -------------------
 1d series:
-    PitchSeries, Rhyme, Chord, PitchClassSeries
-2d series(segment):
-    PitchSegment, PitchClassSegment, ContourSegment
+    PitchSeries, Rhythm, Chord, PitchClassSeries
+2d series(pitch_class_series):
+    PitchSegment, PitchClassSeries, ContourSegment
 """
 
-from .series1d import PitchSeries, Rhyme, Chord, PitchClassSeries
-from .series2d import PitchSegment, PitchClassSegment, ContourSegment
+from .series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
+from .series2d import PitchSegment, ContourSegment
+from .tree import MainTree
 
 __all__ = {
-    "PitchSeries", "Rhyme", "Chord", "PitchClassSeries",
-    "PitchSegment", "PitchClassSegment", "ContourSegment",
+    "PitchSeries", "Rhythm", "Chord", "PitchClassSeries",
+    "PitchSegment", "PitchClassSeries", "ContourSegment",
+    "MainTree",
 }

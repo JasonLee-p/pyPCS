@@ -1,12 +1,12 @@
 """
-pypcs
+pyPCS
 =====
 (unfinished)
 
 Provides
-  1. Various class object of post-tonal music items
+  1. Various class object_ of post-tonal music items
   2. Easy transpositions over post-tonal music items
-  3. Random chord, series, segment generation
+  3. Random chord, series, pitch_class_series generation
 
     We are trying to make a powerful and professional post tonal music analyzing tool.
 
@@ -17,25 +17,25 @@ How to use the documentation
 Documentation is available in two forms: docstrings provided
 with the code, and a loose standing reference guide, available from
 `github <https://github.com/JasonLee-p/pyPCS>`_.
-(might be uncompleted somewhere as it'pypcs unfinished)
+(might be uncompleted somewhere as it is unfinished)
 
-To import `pypcs`::
+To import `pyPCS`::
 
-  >>> import pypcs
+  >>> import pyPCS
 
 Code snippets are indicated by three greater-than signs::
 
-  >>> x = 42
-  >>> x = x + 1
+  >>> x = 69
+  >>> x = x % 12
 
 Use the built-in ``help`` function to view a function'pypcs docstring::
 
   >>> # unfinished
-  >>> help(pypcs.PitchSegment)
+  >>> help(pyPCS.PitchSegment)
   ... # doctest: +SKIP
 
 For some objects, ``np.info(obj)`` may provide additional help.  This is
-particularly true if you see the line "Help on ufunc object:" at the top
+particularly true if you see the line "Help on ufunc object_:" at the top
 of the help() page.  Ufuncs are implemented in C, not Python, for speed.
 The native Python help() does not know how to view their help, but our
 np.info() function does.
@@ -43,14 +43,14 @@ np.info() function does.
 To search for documents containing a keyword, do::
 
   >>> # unfinished
-  >>> pypcs.lookfor('keyword')
+  >>> pyPCS.lookfor('keyword')
   ... # doctest: +SKIP
 
 General-purpose documents like a glossary and help on the basic concepts
 of numpy are available under the ``doc`` sub-module::
 
   >>> # unfinished
-  >>> from pypcs import PitchSegment
+  >>> from pyPCS import PitchSegment
   >>> help(PitchSegment)
   ... # doctest: +SKIP
 
@@ -73,8 +73,8 @@ Some naming regulations:
 If an attribute end up with "group",
     it means that it'pypcs order is not in consideration.
 
-If an attribute end up with "segment",
-    it means that it'pypcs ordered and contains rhyme set.
+If an attribute end up with "pitch_class_series",
+    it means that it'pypcs ordered and contains pitch_class_series set.
 
 If an attribute end up with "series",
     it means that it'pypcs ordered and contains pitches' or pitch sets' duration.
@@ -90,9 +90,9 @@ __all__ = [
     "play_note", "play_chord", "play_chord_set", "play_pitch_segment",  # _player
     "root_note_PH", "mod12"  # chorder
 ]
-from .series.series1d import PitchSeries, Rhyme, Chord, PitchClassSeries
-from .series.series2d import PitchSegment, PitchClassSegment, ContourSegment
-from .basicGenerator import get_segments_subsegment, counterpoint, random_relative_pitch_set, \
+from .series.series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
+from .series.series2d import PitchSegment, ContourSegment
+from .basicGenerator import get_segments_subsegment, counterpoint, random_atonal_pitch_space, \
     randomChord, randomSegment, randomRhythm
 from .piecesGenerator import *
 

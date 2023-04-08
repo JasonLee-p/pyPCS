@@ -26,7 +26,7 @@ def play_note(_player_, note, beats, bpm=80):
 def play_pitch_segment(_player, pitch_segment, bpm=80, instrument='Piano'):
     """
     :param _player: Pygame.midi.Output(int) variable.
-    :param pitch_segment: PitchSegment class object or a list of pitch list and duration list.
+    :param pitch_segment: PitchSegment class object_ or a list of pitch list and duration list.
     :param bpm: Beats per minutes.
     :param instrument: 'Piano' or 'Strings'
     :return: None

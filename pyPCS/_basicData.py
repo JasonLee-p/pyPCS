@@ -6,19 +6,18 @@ and stores the map between notes and value, chord name and chroma vectors, and s
 
 # 打印函数运行的时间
 def _prt_func_time(func):
-
     def f(*args, **kwargs):
         from time import time
         st = time()
         _return = func(*args, **kwargs)
-        print("Time: \033[0;33m" + str(time()-st) + "pypcs\033[0m")
+        print("Time: \033[0;33m" + str(time() - st) + "pypcs\033[0m")
         return _return
+
     return f
 
 
 # 打印函数每运行一定次数的时间
 def _prt_funcs_time(times):
-
     def __prt_funcs_time(func):
         st = 0
         counter = 0
@@ -29,10 +28,12 @@ def _prt_funcs_time(times):
             st = time() if counter == 0 else st
             counter += 1
             if counter == times:
-                print(time()-st)
+                print(time() - st)
                 counter = 0
             return func(*args, **kwargs)
+
         return f
+
     return __prt_funcs_time
 
 
@@ -45,6 +46,7 @@ def _prt_func_run_num(func):
         counter += 1
         print(counter)
         return func(*args, **kwargs)
+
     return f
 
 
@@ -434,3 +436,12 @@ chords_chroma_vector = {
 note_cof_value = {0: 0, 1: -5, 2: 2, 3: -3, 4: 4, 5: -1, 6: 6, 7: 1, 8: -4, 9: 3, 10: -2, 11: 5}
 # 紧张度计算的音程预设值
 note_tension = {0: 0, 1: 32, 2: 8, 3: 4, 4: 2, 5: 1, 6: 16, 7: 1, 8: 2, 9: 4, 10: 8, 11: 32}
+# 泛音强度
+overtone_strength = {12: 0.85, 19: 0.825, 24: 0.8, 28: 0.75, 31: 0.7, 34: 0.6, 36: 0.6, 38: 0.5}
+# 音程和不协和度之间的关系
+interval_dissonance = {
+    0: 0,
+    1: 5.5, 2: 3.3, 3: 2, 4: 2.3, 5: 1.5, 6: 2.8, 7: 0.5, 8: 2.8, 9: 1, 10: 1.8, 11: 2.9, 12: 0,
+    13: 2.2, 14: 1.5, 15: 1, 16: 1.2, 17: 0.7, 18: 1.4, 19: 0, 20: 1.4, 21: 0.5, 22: 0.9, 23: 1.4, 24: 0,
+    25: 1, 26: 0, 27: 0.4, 28: 0, 29: 0.3, 30: 0.6, 31: 0, 32: 0.6, 33: 0.2, 34: 0.1, 35: 0.6, 36: 0,
+}

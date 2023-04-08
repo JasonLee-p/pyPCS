@@ -1,12 +1,17 @@
 """
 Basic functions:
 """
+import copy
+import math
+from fractions import Fraction
+from typing import List
+
 import numpy as _np
-from .._basicData import note_value, chords_chroma_vector, note_cof_value
+from .._basicData import note_value, chords_chroma_vector, note_cof_value, interval_dissonance
 
 
 # 音集（有序或无序）的键位音级集（若不含重复，即repeat = False，可算作无序；反之可算作有序）
-def to_pc_group(pitch_group, ordered=False):
+def to_pc_set(pitch_group, ordered=False):
     cns = []
     if ordered is False:
         for pitch in pitch_group:
@@ -23,7 +28,7 @@ def to_pc_group(pitch_group, ordered=False):
 
 # 通过色度向量计算出和弦类型
 def chord_type(pitch_group):
-    pc_group = to_pc_group(pitch_group)
+    pc_group = to_pc_set(pitch_group)
     self_template = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for _i in pc_group:
         self_template[_i] = 1
@@ -105,14 +110,18 @@ def pitches_counter(pitch_series):
 # 音集截段的倾向性（音高，音符密集度）
 def tendentiousness(pitch_segment):
     """
-    When you use this function, the series shouldn't be too short. If too short, it'pypcs pitch tend might be meaningless.
+    When you use this function, the series shouldn't be too short.
 
-    :param pitch_segment: A list with two lists: note group(type = int) and its duration(beat, type = float)
+    If too short, it's pitch tend might be meaningless.
+
+    :param pitch_segment:
+        A list with two lists: note group(type = int) and its duration(beat, type = float)
+        or class 'PitchSegment's attribute 'pitch_class_series'.
     :return: Pitch Tendentiousness and Rhythm Intensity Tendentiousness (type = list).
     """
     # 确保传入的参数是含两个相同长度列表的列表，并且长度大于等于3，否则报错
     if len(pitch_segment[0]) != len(pitch_segment[1]):
-        raise RuntimeError("Segment'pypcs two lists' length should be the same.")
+        raise RuntimeError("Segment's two lists' length should be the same.")
     if len(pitch_segment[0]) < 3:
         raise RuntimeError("The series should contain at least 3 notes")
     # 从segment获取音符集合
@@ -182,59 +191,76 @@ def cut(pitch_segment, position):
     return
 
 
-def get_segments_subsegment(ps, start_time, finish_time=None):
+def get_subsegment(pitch_segment: List[List],
+                   start_beat: str,
+                   end_beat=None
+                   ) -> List[List]:
     """
-    :param ps: Pitch series
-    :param start_time:Start time
-    :param finish_time:Finish time
-    :return: If start time is equal to finish time or finish time is None, it returns a pitch'pypcs value(int),
-    else, it returns a new pitch series(list with two lists inside).
+    :param pitch_segment: Pitch series, which should be a list of two lists.
+    :param start_beat:Start beat
+    :param end_beat:End beat
+    :return:
+    If start time is equal to finish time or finish time is None, it returns a pitch'pyPCS value(int),
+        else, it returns a new pitch series(list with two lists inside).
     """
-    total_duration = sum([float(ii) for ii in ps[1]])
-    if finish_time < start_time:
-        raise ValueError("Finish time should be larger than start time.")
-    if float(start_time) == total_duration:
-        raise ValueError("Start time should be smaller than total duration.")
-    if finish_time > total_duration:
-        # print(sum([float(i) for i in ps[1]]))
-        raise ValueError("Finish time should be smaller than the total duration of the pitch series.")
-    duration_set = ps[1]
-    result_ps = [[], []]
-    start_index = 0
-    finish_index = 0
-    first_d = 0
-    last_d = 0
-    t = 0
-    start_cal = True
-    for ii in range(len(duration_set)):
-        t += duration_set[ii]
-        if t > finish_time:
-            if start_time == finish_time or finish_time is None:
-                return ps[0][ii]
-            finish_index = ii
-            last_d = t - finish_time
+    pitch_s, r = pitch_segment
+    total_duration = sum([Fraction(d) for d in r])
+    all_nodes = [Fraction(0)]
+    cou = Fraction(0)
+    for i in r:
+        cou += Fraction(i)
+        all_nodes.append(copy.deepcopy(cou))
+
+    # 确定start_index，初始化start_duration
+    start_index = None
+    start_beat = Fraction(start_beat)
+    if start_beat > total_duration:  # ValueError
+        raise ValueError("The start_beat should be larger than total duration of the series.")
+    if start_beat == total_duration and end_beat is None:  # 当求的是最后时刻的音高：
+        return [[pitch_s[-1]], ['0']]
+    for node in reversed(all_nodes):
+        if start_beat >= node:
+            start_index = all_nodes.index(node)
             break
-        if t == finish_time:
-            if start_time == finish_time or finish_time is None:
-                return ps[0][ii + 1]
-            finish_index = ii
-            last_d = t - start_time
-            break
-        if t > start_time and start_cal:
-            start_index = ii
-            first_d = t - start_time
-            start_cal = 0
-    if not start_index:
-        return [[ps[0][finish_index]], [str(last_d)]]
-    for ii in range(start_index, finish_index + 1):
-        result_ps[0].append(ps[0][ii])
-        if ii == start_index:
-            result_ps[1].append(str(first_d))
-        elif ii == finish_index:
-            result_ps[1].append((str(last_d)))
-        else:
-            result_ps[1].append(str(duration_set[ii]))
-    return result_ps
+    start_duration = all_nodes[start_index + 1] - start_beat
+
+    if end_beat is None:
+        return [pitch_s[start_index], ['0']]
+    else:
+        if end_beat > total_duration:  # ValueError
+            raise ValueError("The end_beat should be larger than total duration of the series.")
+        end_beat = Fraction(end_beat)
+
+    # 确定end_index，初始化end_duration
+    end_index = None
+    if total_duration - Fraction(r[-1]) < end_beat <= total_duration:
+        end_index = len(r) - 1
+    else:
+        for node in reversed(all_nodes):
+            if end_beat > node:
+                end_index = all_nodes.index(node)
+                break
+    end_duration = end_beat - all_nodes[end_index]
+    # print(all_nodes[end_index])
+
+    # 计算最终结果：
+    sub_ps = pitch_s[start_index:end_index + 1]  # 最后一个索引会丢失，所以+1
+    sub_r = r[start_index:end_index + 1]  # 最后一个索引会丢失，所以+1
+    if start_beat in all_nodes and end_beat in all_nodes:  # 如果没有音符被start_index和end_index截断
+        pass
+    else:  # 如果有音符被start_beat和end_beat截断：
+        if end_index != start_index:  # 如果结果有多个音符：
+            sub_r[0] = str(start_duration)
+            sub_r[-1] = str(end_duration)
+        else:  # 如果结果只有一个音符：
+            # 三种截取点状态（是否在传入的segment的节点上）
+            if start_beat not in all_nodes and end_beat not in all_nodes:  # start和end都不在
+                sub_r = [str(end_duration + start_duration - Fraction(r[start_index]))]
+            elif start_beat in all_nodes and end_beat not in all_nodes:  # start在而end不在
+                sub_r = [str(end_duration)]
+            else:  # start不在而end在
+                sub_r = [str(start_duration)]
+    return [sub_ps, sub_r]
 
 
 """ Basic operation on Pitch-class Segment:
@@ -316,3 +342,27 @@ def pitch_class_cycles(pitch_class_series, num=0):
         pitch_class_series.append(first)
     return pitch_class_series
 
+
+def chord_dissonance(chord: List[int]):
+    # dissonance_group = _np.zeros(len(chord) - 1)
+    # for i in range(len(chord) - 1, 0, -1):
+    #     avr = []
+    #     for j in range(i):
+    #         avr.append(interval_dissonance[chord[i] - chord[j]])
+    #     # print(avr)
+    #     dissonance_group[i - 1] = _np.mean(avr)
+
+    dissonance_group = _np.zeros(math.factorial(len(chord))//(2 * math.factorial(len(chord)-2)))
+    counter = 0
+    for root_i in range(len(chord)-1):
+        for interval_i in range(root_i+1, len(chord)):
+            dissonance_group[counter] = interval_dissonance[chord[interval_i]-chord[root_i]]
+            counter += 1
+    return _np.mean(dissonance_group)
+
+
+def chord_functionality(tonality, chord: List[int]):
+    cof_relation = _np.zeros(len(chord))
+    for i in len(chord):
+        cof_relation[i] = note_cof_value[(chord[i] - tonality) % 12]
+    return

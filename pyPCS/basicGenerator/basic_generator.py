@@ -4,7 +4,6 @@
 import math
 from fractions import Fraction
 # from .._player import play_pitch_segment
-import time
 
 import numpy as np
 from .._basicData import _prt_func_time, _prt_funcs_time, _prt_func_run_num
@@ -18,7 +17,7 @@ def get_segments_subsegment(ps, start_time, finish_time=None):
     :param ps: Pitch series
     :param start_time:Start time
     :param finish_time:Finish time
-    :return: If start time is equal to finish time or finish time is None, it returns a pitch'pypcs value(int),
+    :return: If start time is equal to finish time or finish time is None, it returns a pitch'pyPCS value(int),
         else, it returns a new pitch series(list with two lists inside).
     """
     start_time = float(start_time)
@@ -140,7 +139,7 @@ def counterpoint(original_pitch_segment, average_interval, counterpoint_p_num, n
 
 
 # 根据长度生成一个随机相对音高序列
-def random_relative_pitch_set(note_num, scale=3):
+def random_atonal_pitch_space(note_num, scale=3):
     if scale > 6:
         raise ValueError("Scale expects a number less than 7")
     # 初始化音符序列
@@ -222,12 +221,12 @@ def randomRhythm(note_num, total_duration, style):
 
 # 随机生成一个音集截段（包括节奏）
 def randomSegment(note_num, total_duration, first_note, note_scale=3, style="smooth", _type='str'):
-    random_r_p_set = random_relative_pitch_set(note_num, note_scale)
+    random_r_p_set = random_atonal_pitch_space(note_num, note_scale)
     first_r_note = random_r_p_set[0]
     random_pitch_set = [r_p + first_note - first_r_note for r_p in random_r_p_set]
     ds = randomRhythm(note_num, total_duration, style)
     ds = [str(d) for d in ds] if _type == 'str' else ds
-    return [random_pitch_set, ds]
+    return random_pitch_set, ds
 
 
 if __name__ == "__main__":
