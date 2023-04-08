@@ -2,6 +2,7 @@
 ### pyPCS —— 专业的无调性音乐分析工具（未完成）
 
 [![Release](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
+[![Work log](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://user.qzone.qq.com/2593292614/infocenter)
 
 ## Choosing Language
 - [English](#English version)
