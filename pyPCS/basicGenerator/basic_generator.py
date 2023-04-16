@@ -110,7 +110,7 @@ def randomChord(note_num, scale=7, loc=60):
         n = int(np.random.normal(loc=loc, scale=scale, size=None) + 0.5)
         if n < loc + 1.5 * scale and n not in chord:
             chord.append(n)
-    return chord
+    return sorted(chord)
 
 
 # TODO: unfinished

@@ -7,7 +7,8 @@ from fractions import Fraction
 from typing import List
 
 import numpy as _np
-from .._basicData import note_value, chords_chroma_vector, note_cof_value, interval_dissonance
+from .._basicData import note_value, chords_chroma_vector, note_cof_value, interval_dissonance_t1, \
+    interval_dissonance_t2, note_cof_angle
 
 
 # 音集（有序或无序）的键位音级集（若不含重复，即repeat = False，可算作无序；反之可算作有序）
@@ -344,21 +345,82 @@ def pitch_class_cycles(pitch_class_series, num=0):
 
 
 def chord_dissonance(chord: List[int]):
-    # dissonance_group = _np.zeros(len(chord) - 1)
-    # for i in range(len(chord) - 1, 0, -1):
-    #     avr = []
-    #     for j in range(i):
-    #         avr.append(interval_dissonance[chord[i] - chord[j]])
-    #     # print(avr)
-    #     dissonance_group[i - 1] = _np.mean(avr)
+    chord = sorted(chord)
+    if len(chord) == 2:
+        return interval_dissonance_t2[chord[1] - chord[0]]
+    dissonance_group = _np.zeros(len(chord) - 1)
+    for i in range(len(chord) - 1, 0, -1):
+        avr = []
+        for j in range(i):
+            avr.append(interval_dissonance_t2[chord[i] - chord[j]])
+        # print(avr)
+        dissonance_group[i - 1] = _np.mean(avr)
 
-    dissonance_group = _np.zeros(math.factorial(len(chord))//(2 * math.factorial(len(chord)-2)))
-    counter = 0
-    for root_i in range(len(chord)-1):
-        for interval_i in range(root_i+1, len(chord)):
-            dissonance_group[counter] = interval_dissonance[chord[interval_i]-chord[root_i]]
-            counter += 1
-    return _np.mean(dissonance_group)
+    # dissonance_group = _np.zeros(math.factorial(len(chord))//(2 * math.factorial(len(chord)-2)))
+    # counter = 0
+    # for root_i in range(len(chord)-1):
+    #     for interval_i in range(root_i+1, len(chord)):
+    #         dissonance_group[counter] = interval_dissonance_t1[(chord[interval_i]-chord[root_i])]
+    #         counter += 1
+
+    return _np.mean(dissonance_group).round(2)
+
+
+def chord_dissonance_tian(chord: List[int]):
+    # 音程集合
+    interval_g = []
+    for n in chord:
+        interval = n % 12
+        if interval not in interval_g:
+            interval_g.append(interval)
+    interval_g = sorted(interval_g)
+    # 五度圈跨度
+    spans = []
+    for n in interval_g:
+        spans.append(note_cof_value[n])
+    span_g = []
+    for i1 in range(len(spans)):
+        spans[0] = spans[0] + 12
+        span = _np.max(spans) - _np.min(spans)
+        spans.sort()
+        span_g.append(span)
+    fifth_span = _np.min(span_g)
+    # 小二度，大二度数量
+    semitone_num = 0
+    major2 = 0
+    if interval_g[-1] - interval_g[0] == 11:
+        semitone_num += 1
+    elif interval_g[-1] - interval_g[0] == 10:
+        major2 += 1
+    for ii in range(len(interval_g) - 1):
+        if interval_g[ii + 1] - interval_g[ii] == 1:
+            semitone_num += 1
+        if interval_g[ii + 1] - interval_g[ii] == 2:
+            major2 += 1
+    # 开始判断：
+    if 2 <= fifth_span <= 4:
+        ...
+    if fifth_span == 5:
+        ...
+    if fifth_span == 6:
+        ...
+    if fifth_span > 6:
+        ...
+
+
+def chord_colour_hua(chord: List[int]) -> float:
+    _chord_colour_hua = [math.degrees(note_cof_angle[note % 12]) for note in chord]
+    return float(_np.mean(_chord_colour_hua))
+
+
+def chord_colour(chord: List[int], dynamics: List[int]) -> float:
+    """
+    :param chord: Chord's note group
+    :param dynamics: Dynamics (0-1)
+    :return:
+    """
+    _chord_colour_hua = [math.degrees(note_cof_angle[chord[i] % 12] * dynamics[i]) for i in range(len(chord))]
+    return float(_np.mean(_chord_colour_hua))
 
 
 def chord_functionality(tonality, chord: List[int]):
@@ -366,3 +428,55 @@ def chord_functionality(tonality, chord: List[int]):
     for i in len(chord):
         cof_relation[i] = note_cof_value[(chord[i] - tonality) % 12]
     return
+
+
+def conform_voice_leading(chord, last_chord):
+    """
+
+    :param chord:
+    :param last_chord:
+    :return: bool
+    """
+    chord = sorted(chord)
+    if len(chord) < 3 or len(last_chord) < 3:
+        raise ValueError("There should be more than 2 notes in a chord, especially when judging voice leading.")
+
+    if len(chord) == len(last_chord):
+        # 判断所有声部是否同向：
+        # 定义计数器
+        cou = 0
+        for i in range(len(last_chord)):
+            if last_chord[i] > chord[i]:
+                cou += 1
+            if last_chord[i] < chord[i]:
+                cou -= 1
+        if abs(cou) == len(chord):
+            print(f"{last_chord}->{chord}: ")
+            print("All voices" + "\033[0;31m same direction\033[0m" +
+                  ".")
+            return False
+    elif len(chord) > len(last_chord):  # 声部扩张
+        # 判断声部是否同向：
+        cou_up = 0
+        cou_dn = 0
+        for i in range(-1, -len(last_chord)-1, -1):
+            if chord[i] < last_chord[i]:
+                cou_dn += 1
+        for i in range(len(last_chord)):
+            if chord[i] > last_chord[i]:
+                cou_up += 1
+        if cou_up == len(last_chord) or cou_dn == len(last_chord):
+            return False
+    else:  # 声部减少
+        # 判断声部是否同向：
+        cou_up = 0
+        cou_dn = 0
+        for i in range(-1, -len(chord)-1, -1):
+            if chord[i] > last_chord[i]:
+                cou_up += 1
+        for i in range(len(chord)):
+            if chord[i] < last_chord[i]:
+                cou_dn += 1
+        if cou_up == len(chord) or cou_dn == len(chord):
+            return False
+    return True

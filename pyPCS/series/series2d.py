@@ -5,7 +5,7 @@ This module defines functions in Pitches-class Set Theory.
 from __future__ import annotations
 
 import numpy as _np
-from typing import List, Tuple, Union
+from typing import Tuple, Union
 from fractions import Fraction
 
 import pyPCS.series.series1d as ps  # 避免循环调用错误，不使用from语法
@@ -99,7 +99,7 @@ class PitchSegment:
     @once_per_arg
     def get_pc_segment(self) -> Tuple[object, PitchSegment, str]:
         pitch_class_set = to_pc_set(self.pitch_set[:], ordered=True)
-        return PitchClassSeries([pitch_class_set], self.rhythm), self, "Pitch class series"
+        return ps.PitchClassSeries([pitch_class_set], self.rhythm), self, "Pitch class series"
 
     def getSubsegment(self, start_beat, end_beat=None):
         """
