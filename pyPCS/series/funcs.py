@@ -366,23 +366,23 @@ def chord_dissonance(chord: List[int]):
     return _np.mean(dissonance_group).round(2)
 
 
-def chord_dissonance_tian(chord: List[int]):
-    # 音程集合
+def chord_consonance_tian(chord: List[int]):
+    # 得到音程集合interval_g
     interval_g = []
     for n in chord:
         interval = n % 12
         if interval not in interval_g:
             interval_g.append(interval)
     interval_g = sorted(interval_g)
-    # 五度圈跨度
-    spans = []
+    # 得到五度圈跨度fifth_span
+    f_spans = []
     for n in interval_g:
-        spans.append(note_cof_value[n])
+        f_spans.append(note_cof_value[n])
     span_g = []
-    for i1 in range(len(spans)):
-        spans[0] = spans[0] + 12
-        span = _np.max(spans) - _np.min(spans)
-        spans.sort()
+    for i1 in range(len(f_spans)):
+        f_spans[0] = f_spans[0] + 12
+        span = _np.max(f_spans) - _np.min(f_spans)
+        f_spans.sort()
         span_g.append(span)
     fifth_span = _np.min(span_g)
     # 小二度，大二度数量
@@ -397,11 +397,22 @@ def chord_dissonance_tian(chord: List[int]):
             semitone_num += 1
         if interval_g[ii + 1] - interval_g[ii] == 2:
             major2 += 1
+    # TODO: 是否有大三小三和弦：
+    contain_M_m_3chord = True
     # 开始判断：
     if 2 <= fifth_span <= 4:
-        ...
+        if major2 <= 1:
+            if contain_M_m_3chord:
+                return 10
+            else:
+                return 9.67
+        elif 1 < major2 <= 3:
+            return 9.33
     if fifth_span == 5:
-        ...
+        if major2 <= 1 and contain_M_m_3chord:
+            return 9
+        elif major2 == 2:
+            return
     if fifth_span == 6:
         ...
     if fifth_span > 6:

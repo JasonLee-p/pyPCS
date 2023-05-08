@@ -6,7 +6,7 @@ import pyPCS.series.series2d as s2  # 避免循环调用错误，不使用from�
 from .._player import play_chord
 from ..chorder import c_span, chord_colour_k, semitone_num, root_note_PH
 from .funcs import chord_type, to_pc_set, pc_to_circle_of_fifth_ns, tendentiousness, chord_dissonance, chord_colour_hua, \
-    chord_dissonance_tian
+    chord_consonance_tian
 from .tree import SeriesTree, RhythmTree, PitchClassSeriesTree
 from .._basicData import note_value
 from ..classmethod_dec import once_per_arg
@@ -335,7 +335,7 @@ class Chord:
         self.root_note = root_note_PH(pitch_group)
         self.colour_k = chord_colour_k(to_pc_set(pitch_group))
         self.colour_hua = chord_colour_hua(pitch_group)
-        self.dissonance_tian = chord_dissonance_tian(pitch_group)
+        self.consonance_tian = chord_consonance_tian(pitch_group)
         self.dissonance = chord_dissonance(pitch_group)
         if self.type == "Unable to recognize":
             return

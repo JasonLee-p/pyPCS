@@ -11,9 +11,9 @@ from .._basicData import note_value
 
 class PitchSeries:
     """
-        Any function that change the series list return a new object of a class (may not be PitchSegment):
+        Any function that change the series list return a new object_ of a class (may not be PitchSegment):
 
-        Pitch series contains a pitch set and a rhyme, various attributes and transformations are included in the class:
+        Pitch series contains a pitch set and a pitch_class_series, various attributes and transformations are included in the class:
         Attributes:
             number of notes:
             duration:
@@ -31,7 +31,7 @@ class PitchSeries:
 
     def __init__(self, series: List[int], new_tree=True, name=False, parent=None, __style=None):
         """
-        The first element of variable 'rhyme' is a pitch list while the second element is a duration list.
+        The first element of variable 'pitch_class_series' is a pitch list while the second element is a duration list.
         You are not supposed to use attributes start with "__" !
         :param series: Segment.
         :param new_tree: If you want to set a new tree of segments and set this one as the parent, set it as True
@@ -108,11 +108,11 @@ class PitchSeries:
     def __reversed__(self):
         new_series = reversed(self.series)
         return PitchSeries(list(new_series)[:],
-                           new_tree=self, parent=self, name="Retrograde (with rhyme)")
+                           new_tree=self, parent=self, name="Retrograde (with pitch_class_series)")
 
-    # def get_pc_segment(self) -> Tuple[PitchClassSegment, PitchSegment, str]:
-    #     pitch_class_set = to_pc_group(self.series[:], ordered=True)
-    #     return PitchClassSegment([pitch_class_set], self.rhyme[:]), self, "Pitch class series"
+    # def get_pc_segment(self) -> Tuple[PitchClassSeries, PitchSegment, str]:
+    #     pitch_class_set = to_pc_set(self.series[:], ordered=True)
+    #     return PitchClassSeries([pitch_class_set], self.pitch_class_series[:]), self, "Pitch class series"
 
     def get_average(self) -> float:
         return self.average
@@ -135,21 +135,21 @@ class PitchSeries:
 
     def Retrograde(self, add_pitch: int = 0) -> PitchSeries:
         """
-        This function creates a Retrograde transformation of self without changing the rhythm.
+        This function creates a Retrograde transformation of self without changing the pitch_class_series.
         :param add_pitch: Transposition num.
         :return: Retrograded pitch_segment, Original pitch_segment, A string indicating that a Retrograde has been made.
         """
         new_series = list(reversed(self.series))[:]
         if add_pitch == 0:
             return s2.PitchSegment(new_series,
-                                   new_tree=self, parent=self, name="Retrograde without rhyme")
+                                   new_tree=self, parent=self, name="Retrograde without pitch_class_series")
         new_series = [new_pitch + int(add_pitch) for new_pitch in new_series]
         return s2.PitchSegment(new_series,
                                new_tree=self, parent=self, name=f"Retrograde{add_pitch}")
 
     def Inversion(self, axes: int) -> PitchSeries:
         """
-        This function creates an Inversion transformation of self without changing the rhythm.
+        This function creates an Inversion transformation of self without changing the pitch_class_series.
         :param axes: An int to invert each pitch in the set.
         :return: Inverted pitch_segment, Original pitch_segment, A string indicating that an Inversion has been made.
         """
@@ -159,18 +159,18 @@ class PitchSeries:
 
     def RetrogradeInversion(self, axes: int) -> PitchSeries:
         """
-        This function creates a Retrograde then Inversion transformation of self with changed rhythm.
+        This function creates a Retrograde then Inversion transformation of self with changed pitch_class_series.
         :param axes: An int to invert each pitch in the set.
         :return: Retrograde then Inversion pitch_segment, Original pitch_segment,
         A string indicating that a RetrogradeInversion has been made.
         """
         new_series = reversed([2 * axes - pitch for pitch in self.series])
         return PitchSeries(new_series,
-                           new_tree=self, parent=self, name=f"RetrogradeInversion{axes} (with rhyme)")
+                           new_tree=self, parent=self, name=f"RetrogradeInversion{axes} (with pitch_class_series)")
 
     def Rotation(self, num: int, add_pitch: int = 0) -> PitchSeries:
         """
-        This function creates a Rotation transformation of self without changing the rhythm.
+        This function creates a Rotation transformation of self without changing the pitch_class_series.
         :param num: Rotation num
         :param add_pitch: Transposition num.
         :return: Retrograded pitch_segment, Original pitch_segment, A string indicating that a Rotation has been made.
@@ -243,7 +243,7 @@ class Rhyme:
 
     def __eq__(self, other):
         if type(other) is Rhyme:
-            return self.rhyme == other.rhyme
+            return self.rhyme == other.rhythm
         if type(other) is list[str]:
             return self.rhyme == other
 
@@ -273,19 +273,19 @@ class Rhyme:
         new_rhyme = self.rhyme
         new_rhyme[key] = value
         return Rhyme(new_rhyme,
-                     new_tree=True, parent=self, name=f"Reset rhyme[{key}]{note_value[value]}")
+                     new_tree=True, parent=self, name=f"Reset pitch_class_series[{key}]{note_value[value]}")
 
     def __reversed__(self):
         new_duration_set = reversed(self.rhyme)
         return Rhyme(list(new_duration_set)[:],
-                     new_tree=self, parent=self, name="Retrograde (with rhyme)")
+                     new_tree=self, parent=self, name="Retrograde (with pitch_class_series)")
 
     def get_rhythm_intensity_tend(self) -> float:
         return self.rhythm_intensity_tend
 
     def Retrograde(self) -> Rhyme:
         """
-        This function creates a Retrograde transformation of self with changed rhythm.
+        This function creates a Retrograde transformation of self with changed pitch_class_series.
         :return: Retrograded pitch_segment, Original pitch_segment, A string indicating that a Retrograde has been made.
         """
         new_rhyme = list(reversed(self.rhyme))[:]
@@ -294,7 +294,7 @@ class Rhyme:
 
     def Rotation(self, num: int) -> Rhyme:
         """
-        This function creates a Rotation transformation of self with changed rhythm.
+        This function creates a Rotation transformation of self with changed pitch_class_series.
         :param num: Rotation num
         :return: Retrograded pitch_segment, Original pitch_segment, A string indicating that a Rotation has been made.
         """
@@ -371,7 +371,7 @@ class PitchClassSeries:
         """
         result = []
         if len(self.pitch_class_set) != len(cal_set):
-            raise RuntimeError("The cal_set'pypcs length should be equal to note set'pypcs length.")
+            raise RuntimeError("The cal_set's length should be equal to note set's length.")
         else:
             for ns in range(len(cal_set)):
                 result.append((self.pitch_class_set[ns] + cal_set[ns]) % 12)
