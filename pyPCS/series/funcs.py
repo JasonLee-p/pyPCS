@@ -13,6 +13,13 @@ from .._basicData import note_value, chords_chroma_vector, note_cof_value, inter
 
 # 音集（有序或无序）的键位音级集（若不含重复，即repeat = False，可算作无序；反之可算作有序）
 def to_pc_set(pitch_group, ordered=False):
+    """
+    注意，这个函数返回的 pitch segment 是无序的，如果如的音集含有重复音级的音，则会删除后面的，除非ordered参数为True
+
+    :param pitch_group:
+    :param ordered:
+    :return:
+    """
     cns = []
     if ordered is False:
         for pitch in pitch_group:
@@ -25,6 +32,49 @@ def to_pc_set(pitch_group, ordered=False):
     else:
         result = list([pitch % 12 for pitch in pitch_group])
         return result
+
+
+def contains_M_m_3chord(pc_group):
+    Mm3chords = [
+        [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+        [1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1],
+        # 小和弦
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+        [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    ]
+    self_template = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for _i in pc_group:
+        self_template[_i] = 1
+    for chroma_vector in Mm3chords:
+        counter = 0
+        judging = [self_template[i] == chroma_vector[i] == 1 for i in range(12)]
+        # print(judging)
+        for result in judging:
+            if result:
+                counter += 1
+        if counter == 3:
+            return True
+    return False
 
 
 # 通过色度向量计算出和弦类型
@@ -179,6 +229,7 @@ def tendentiousness(pitch_segment):
 
 
 def get_intensity(pitch_segment):
+    # TODO:
     return pitch_segment
 
 
@@ -366,17 +417,12 @@ def chord_dissonance(chord: List[int]):
     return _np.mean(dissonance_group).round(2)
 
 
-def chord_consonance_tian(chord: List[int]):
-    # 得到音程集合interval_g
-    interval_g = []
-    for n in chord:
-        interval = n % 12
-        if interval not in interval_g:
-            interval_g.append(interval)
-    interval_g = sorted(interval_g)
+def chord_consonance_tian(chord: List[int], chord_typ: str) -> float:
+    # 得到音级集合pc_group
+    pc_group = sorted(to_pc_set(chord))
     # 得到五度圈跨度fifth_span
     f_spans = []
-    for n in interval_g:
+    for n in pc_group:
         f_spans.append(note_cof_value[n])
     span_g = []
     for i1 in range(len(f_spans)):
@@ -385,20 +431,30 @@ def chord_consonance_tian(chord: List[int]):
         f_spans.sort()
         span_g.append(span)
     fifth_span = _np.min(span_g)
+    # print(f"fifth span:{fifth_span}")
     # 小二度，大二度数量
     semitone_num = 0
     major2 = 0
-    if interval_g[-1] - interval_g[0] == 11:
+    # for ii in range(len(chord)-1):
+    #     c = sorted(chord)
+    #     if c[ii + 1] - c[ii] == 1:
+    #         semitone_num += 1
+    #     if c[ii + 1] - c[ii] == 2:
+    #         major2 += 1
+    if pc_group[-1] - pc_group[0] == 11:
         semitone_num += 1
-    elif interval_g[-1] - interval_g[0] == 10:
+    elif pc_group[-1] - pc_group[0] == 10:
         major2 += 1
-    for ii in range(len(interval_g) - 1):
-        if interval_g[ii + 1] - interval_g[ii] == 1:
+    for ii in range(len(pc_group) - 1):
+        if pc_group[ii + 1] - pc_group[ii] == 1:
             semitone_num += 1
-        if interval_g[ii + 1] - interval_g[ii] == 2:
+        if pc_group[ii + 1] - pc_group[ii] == 2:
             major2 += 1
-    # TODO: 是否有大三小三和弦：
-    contain_M_m_3chord = True
+    # print(f"semitone_num:{semitone_num}")
+    # print(f"major2:{major2}")
+    # 是否有大三小三和弦：
+    contain_M_m_3chord = contains_M_m_3chord(pc_group)
+    # print(f"contains Mm3 chord:{contain_M_m_3chord}")
     # 开始判断：
     if 2 <= fifth_span <= 4:
         if major2 <= 1:
@@ -408,15 +464,99 @@ def chord_consonance_tian(chord: List[int]):
                 return 9.67
         elif 1 < major2 <= 3:
             return 9.33
-    if fifth_span == 5:
+    elif fifth_span == 5:
         if major2 <= 1 and contain_M_m_3chord:
-            return 9
-        elif major2 == 2:
-            return
-    if fifth_span == 6:
-        ...
-    if fifth_span > 6:
-        ...
+            return 7
+        elif major2 == 2 and contain_M_m_3chord:
+            return 6.67
+        else:
+            return 6.33
+    elif fifth_span == 6:
+        if semitone_num == 0:
+            if major2 <= 1:
+                if contain_M_m_3chord:
+                    return 9
+                else:
+                    return 8.67
+            elif major2 == 3:
+                return 8.33
+        elif semitone_num == 1:
+            if major2 == 1 and contain_M_m_3chord:
+                return 6
+            elif major2 == 2 and contain_M_m_3chord:
+                return 5.67
+            else:
+                return 5.33
+        elif semitone_num == 2:
+            if major2 == 1 and contain_M_m_3chord:
+                return 4
+            else:
+                return 3.5
+    else:
+        if semitone_num == 0:
+            if fifth_span == 8 and major2 == 0:
+                return 8
+            elif fifth_span == 8 and major2 == 2:
+                return 7.67
+            else:
+                return 7.33
+        elif semitone_num == 1:
+            if major2 == 0 and contain_M_m_3chord:
+                return 5
+            elif major2 <= 2 and contain_M_m_3chord:
+                return 4.67
+            else:
+                return 4.33
+        elif semitone_num == 2:
+            # TODO: 如何理解常规和弦和复杂和弦？
+            if not chord_typ:  # TODO: 传入的chord_typ尚未把所有常规和弦实装
+                if major2 <= 2 and contain_M_m_3chord:
+                    return 3
+                elif major2 > 2 or not contain_M_m_3chord:
+                    return 2.75
+            else:
+                if major2 <= 3 and contain_M_m_3chord:
+                    return 2.5
+                elif major2 > 3 or not contain_M_m_3chord:
+                    return 2.25
+        else:
+            series2semitone = 0
+            series3semitone = 0
+            if pc_group[-1] - pc_group[0] == 11:
+                if pc_group[1] - pc_group[0] == 1 or pc_group[-1] - pc_group[-2] == 1:
+                    series2semitone += 1
+                    if pc_group[2] - pc_group[1] == pc_group[1] - pc_group[0] == 1 or \
+                            pc_group[-1] - pc_group[-2] == pc_group[-2] - pc_group[-3] == 1:
+                        series3semitone += 1
+            ii = 0
+            while ii < len(pc_group) - 2:
+                if pc_group[ii + 2] - pc_group[ii + 1] == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series2semitone += 2
+                    ii += 3
+                ii += 1
+            ii = 0
+            while ii < len(pc_group) - 3:
+                if pc_group[ii + 3] - pc_group[ii + 2] \
+                        == pc_group[ii + 2] - pc_group[ii + 1] \
+                        == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series3semitone += 1
+                    ii += 4
+                ii += 1
+            if semitone_num == 3:
+                if (not series2semitone) and (not series3semitone):
+                    return 2
+                elif series3semitone:
+                    return 1.33
+                elif series2semitone:
+                    return 1.67
+            elif semitone_num >= 4:
+                if series2semitone == 2:
+                    return 1
+                elif series3semitone:
+                    return 0.67
+                else:
+                    return 0.33
+    print(chord)
 
 
 def chord_colour_hua(chord: List[int]) -> float:
@@ -470,7 +610,7 @@ def conform_voice_leading(chord, last_chord):
         # 判断声部是否同向：
         cou_up = 0
         cou_dn = 0
-        for i in range(-1, -len(last_chord)-1, -1):
+        for i in range(-1, -len(last_chord) - 1, -1):
             if chord[i] < last_chord[i]:
                 cou_dn += 1
         for i in range(len(last_chord)):
@@ -482,7 +622,7 @@ def conform_voice_leading(chord, last_chord):
         # 判断声部是否同向：
         cou_up = 0
         cou_dn = 0
-        for i in range(-1, -len(chord)-1, -1):
+        for i in range(-1, -len(chord) - 1, -1):
             if chord[i] > last_chord[i]:
                 cou_up += 1
         for i in range(len(chord)):
@@ -491,3 +631,7 @@ def conform_voice_leading(chord, last_chord):
         if cou_up == len(chord) or cou_dn == len(chord):
             return False
     return True
+
+
+if __name__ == "__main__":
+    chord_consonance_tian([60, 65, 67])

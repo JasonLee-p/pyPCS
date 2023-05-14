@@ -15,9 +15,9 @@ Available packages:
     PitchSegment, PitchClassSeries, ContourSegment
 """
 
-from .series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
-from .series2d import PitchSegment, ContourSegment
-from .tree import MainTree
+from .test_series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
+from .test_series2d import PitchSegment, ContourSegment
+from .test_tree import MainTree
 
 __all__ = {
     "PitchSeries", "Rhythm", "Chord", "PitchClassSeries",

@@ -10,9 +10,9 @@ from fractions import Fraction
 
 import pyPCS.series.series1d as ps  # 避免循环调用错误，不使用from语法
 from .. import basicGenerator
-from ..classmethod_dec import once_per_arg
-from .tree import SegmentTree, SeriesTree, RhythmTree
-from .funcs import *
+from ..test_classmethod_dec import once_per_arg
+from .test_tree import SegmentTree, SeriesTree, RhythmTree
+from .test_funcs import *
 
 
 # 有序的音集（截段）
@@ -238,7 +238,7 @@ class PitchSegment:
         :param bpm: Beats per minutes.
         :param instrument: instrument.
         """
-        from .._player import play_pitch_segment
+        from ..test_player import play_pitch_segment
         play_pitch_segment(pg_player, self.segment, instrument=instrument, bpm=bpm)
         del play_pitch_segment
 
@@ -550,7 +550,7 @@ class _PitchSegment:
         :param bpm: Beats per minutes.
         :param instrument: instrument.
         """
-        from .._player import play_pitch_segment
+        from ..test_player import play_pitch_segment
         play_pitch_segment(pg_player, self, instrument=instrument, bpm=bpm)
         del play_pitch_segment
 

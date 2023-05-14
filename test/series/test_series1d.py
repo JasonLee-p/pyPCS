@@ -3,13 +3,13 @@ from typing import List
 import numpy as _np
 
 import pyPCS.series.series2d as s2  # 避免循环调用错误，不使用from语法
-from .._player import play_chord
-from ..chorder import c_span, chord_colour_k, semitone_num, root_note_PH
-from .funcs import chord_type, to_pc_set, pc_to_circle_of_fifth_ns, tendentiousness, chord_dissonance, chord_colour_hua, \
+from ..test_player import play_chord
+from ..test_chorder import c_span, chord_colour_k, semitone_num, root_note_PH
+from .test_funcs import chord_type, to_pc_set, pc_to_circle_of_fifth_ns, tendentiousness, chord_dissonance, chord_colour_hua, \
     chord_consonance_tian
-from .tree import SeriesTree, RhythmTree, PitchClassSeriesTree
+from .test_tree import SeriesTree, RhythmTree, PitchClassSeriesTree
 from .._basicData import note_value
-from ..classmethod_dec import once_per_arg
+from ..test_classmethod_dec import once_per_arg
 
 
 class PitchSeries:
@@ -154,7 +154,7 @@ class PitchSeries:
         :param bpm: Beats per minutes.
         :param instrument: instrument.
         """
-        from .._player import play_pitch_segment
+        from ..test_player import play_pitch_segment
         play_pitch_segment(pg_player, [self, ['1'] * self.length], instrument=instrument, bpm=bpm)
         del play_pitch_segment
 
@@ -278,7 +278,7 @@ class Rhythm:
         :param bpm: Beats per minutes.
         :param instrument: instrument.
         """
-        from .._player import play_pitch_segment
+        from ..test_player import play_pitch_segment
         play_pitch_segment(pg_player, [[69] * self.length, self.rhythm], instrument=instrument, bpm=bpm)
         del play_pitch_segment
 
@@ -479,7 +479,7 @@ class PitchClassSeries:
         :param bpm: Beats per minutes.
         :param instrument: instrument.
         """
-        from .._player import play_pitch_segment
+        from ..test_player import play_pitch_segment
         play_pitch_segment(pg_player, [self, ['1'] * self.length], instrument=instrument, bpm=bpm)
         del play_pitch_segment
 

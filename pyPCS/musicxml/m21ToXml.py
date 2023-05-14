@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
-# Name:         musicxml/m21ToXml.py
+# Name:         musicxml/test_m21ToXml.py
 # Purpose:      Translate from music21 objects to musicxml representation
 #
 # Authors:      Michael Scott Asato Cuthbert

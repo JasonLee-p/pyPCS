@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------------------
-# Name:         musicxml/xmlToM21.py
+# Name:         musicxml/test_xmlToM21.py
 # Purpose:      Conversion from MusicXML to Music21
 #
 # Authors:      Michael Scott Asato Cuthbert

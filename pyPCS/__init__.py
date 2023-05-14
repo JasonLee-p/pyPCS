@@ -92,7 +92,7 @@ __all__ = [
 ]
 from .series.series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
 from .series.series2d import PitchSegment, ContourSegment
-from .basicGenerator import get_segments_subsegment, counterpoint, random_atonal_pitch_space, \
+from .basicGenerator import get_segments_subsegment, counterpoint, \
     randomChord, randomSegment, randomRhythm
 from .piecesGenerator import *
 
