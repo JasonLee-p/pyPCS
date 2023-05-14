@@ -4,10 +4,10 @@
 [![Release](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
 
 ## Choosing Language
-- [English](#English version)
+- [English](#English)
 - [简体中文](#简体中文)
 
-## English version
+## English
 
 PCS refers to Pitch-class Set, which is a universal concept in post tonal theory.
 
@@ -27,7 +27,7 @@ This project aims to create a powerful tool for complex music analysing and tiny
 
 The latest release (v0.0.1 but still unfinished) is available on PyPI, and you can install it by saying
 
-```sh
+```shell
 python3 -m pip install pyPCS
 ```
 
@@ -35,21 +35,21 @@ python3 -m pip install pyPCS
 
 After installation, you can simply use the module by
 
-```sh
+```python
 import pyPCS
 ```
-## (I) class PitchSegment
+* ## (I) class PitchSegment
 
 If you are not clear about its meaning, you can read "Introduction to Post-Tonal Theory" written by Joseph N. Straus.
 
 Initialize an object using：
 
-```sh
+```python
 # Assign a value directly：
-pitch_class_series = pypcs.pitch_segment([[60,65,58,69], ['1','1','3/2','1/2']])
+pitch_class_series = pyPCS.PitchSegment([[60,65,58,69], ['1','1','3/2','1/2']])
 ```
 Output:
-```sh
+```shell
 # Then it requires you to name it
 Enter the name of the pitch_class_series tree:
 ```
@@ -65,12 +65,12 @@ For example, G4 is 67.
 
 like '1/2', '4/3', '1'.
 
-### 1.Get length: len()
-```sh
+* ### 1.Get length: len()
+```python
 s_len = len(pitch_class_series)  # Get number of notes
 ```
-### 2.Using index to get its value:
-```sh
+* ### 2.Using index to get its value:
+```python
 s_1 = pitch_class_series[1]  # It will return a tuple, inside of witch are note and its duration.
 print(s_1)
 ```
@@ -78,8 +78,8 @@ Output：
 ```sh
 (65, '1')
 ```
-### 3.Use it as iterator:
-```sh
+* ### 3.Use it as iterator:
+```python
 for i, j in pitch_class_series:
     print(i, end=',')
     print(j)
@@ -91,9 +91,9 @@ Output：
 58,3/2
 69,1/2
 ```
-### 4.Transposition
+* ### 4.Transposition
 It returns the new object after shifting.
-```sh
+```python
 # Use the "+" or "-" operator to shift：
 segment_T1 = pitch_class_series - 1
 # Use method Transposition() (Not recommended)
@@ -109,9 +109,9 @@ Output：
 [[60, 65, 58, 69], ['1', '1', '3/2', '1/2']]
 original_s Transposition11
 ```
-### 5.Retrograde with rhyme
+* ### 5.Retrograde with rhyme
 It returns the new object after shifting.
-```sh
+```python
 # Use method Reversed() to shift
 segment_R = reversed(pitch_class_series)
 # Use method Retrograde_with_rhythm()
@@ -125,16 +125,16 @@ Output：
 ```
 
 Pass an int argument to the function，and it will do transposition after retrograding.
-```sh
+```python
 print(pitch_class_series.Retrograde_with_rhythm(3))
 ```
 Output：
 ```sh
 [[72, 61, 68, 63], ['1/2', '3/2', '1', '1']]
 ```
-### 6.Retrograde without rhyme
+* ### 6.Retrograde without rhyme
 It returns : the new object after shifting.
-```sh
+```python
 # Using method Retrograde_without_rhythm()
 segment_R  = pitch_class_series.Retrograde_without_rhythm()
 print(segment_R.pitch_class_series)
@@ -144,7 +144,7 @@ Output：
 [[69, 58, 65, 60], ['1', '1', '3/2', '1/2']]  # Duration list isn't reversed
 ```
 Pass an int argument to the function，and it will do transposition after retrograding.
-```sh
+```python
 print(pitch_class_series.Retrograde_without_rhythm(3))
 ```
 Output：
@@ -166,7 +166,7 @@ PCS 指的是音级集合（Pitch-class set)，这个概念在后调性音乐理
 
 现如今，AI爆火，其在曲目分析和作曲方面也有广阔的前景
 
-pyPCS旨在创建 一个强大的音乐分析工具 和 一个小型音乐片段生成器（基于随机生成后条件筛选）
+pyPCS旨在创建 一个用于乐理研究人士的趁手的分析工具 和 一个小型音乐片段生成器（基于随机生成后条件筛选）
 
 ## 二.安装
 
@@ -186,12 +186,12 @@ python3 -m pip install pyPCS
 import pyPCS
 ```
 
-## （一）类 PitchSegment
+* ## （一）类 PitchSegment
 Pitch segment 意为音高截段，相关名词可以参考文献《Introduction to Post-Tonal Theory》（《后调性理论导论》）
 
 PitchSegment 是一个用于处理有序的音集的 Python 类，这个类包含了以下属性和方法：
 
-### 属性
+* ### 属性
 
 segment：包括音高和时值两个列表。
 
@@ -209,7 +209,7 @@ pitch_tend：音高趋向性。
 
 rhythm_intensity_tend：密度趋向性。
 
-### 方法
+* ### 方法
 
 Transposition(add_pitch: int)：变换音集的音高。
 
@@ -219,7 +219,7 @@ change_rhyme(total_duration: float, new_style: str)：更改音集的韵律。
 
 getCounterpoint()：使用对位法生成一个包含两个声部的音集。
 
-### 获取截段属性
+* ### 获取截段属性
 
 get_average()：获取加权平均音高。
 
@@ -227,11 +227,11 @@ get_pitch_tend()：获取音高趋向性。
 
 get_rhythm_intensity_tend()：获取密度趋向性。
 
-### 魔术方法
+* ### 魔术方法
 
 作为迭代器使用：返回一个包含音高和时值的元组。
 
-加减运算符：返回一个音符被加键后的新对象，不会改变原来的类对象的值。
+加减运算符：返回音符被运算后的新对象，不会改变原来的类对象的值。
 
 更改索引值：改变音集的某一个音高，返回一个新的类对象，不会改变原来的类对象。
 
@@ -241,9 +241,9 @@ reversed()：将音集倒序（包括节奏），返回一个新的类对象，�
 
 
 ### 示例代码：
-```sh
+```python
 # 直接赋值法：
-pitch_class_series = pypcs.pitch_segment([[60,65,58,69], ['1','1','3/2','1/2']])  # 参数为两个列表组成的列表，第一个为音符表，第二个为时值表。
+pitch_class_series = pyPCS.PitchSegment([[60,65,58,69], ['1','1','3/2','1/2']])  # 参数为两个列表组成的列表，第一个为音符表，第二个为时值表。
 ```
 输出：
 ```sh
@@ -257,14 +257,14 @@ Enter the name of the series tree:
 
 ——音符列表和时值列表的长度必须相等，且大于2。
 
-——为了保持后续计算的准确性，时值列表中最好是字符串类型的时值（拍），如“1/2”， “3”， “4/3”。
+——时值列表中应当是字符串类型的分数时值（拍），如“1/2”， “3”， “4/3”。
 
 ### 1.获取长度len()
-```sh
+```python
 s_len = len(pitch_class_series)  # 获取其音符数量，将会返回4
 ```
 ### 2.使用索引（但暂时不能使用索引对其进行重新赋值）
-```sh
+```python
 s_1 = pitch_class_series[1]  # 会返回一个包含音符及其时值的元组
 print(s_1)
 ```
@@ -273,7 +273,7 @@ print(s_1)
 (65, '1')
 ```
 ### 3.作为迭代器
-```sh
+```python
 for i, j in pitch_class_series:
     print(i, end=',')
     print(j)
@@ -287,7 +287,7 @@ for i, j in pitch_class_series:
 ```
 ### 4.移位操作T（Transposition）
 该方法返回移位后创建的新实例对象
-```sh
+```python
 # 使用"+"或"-"运算符进行移位
 segment_T1 = pitch_class_series - 1  # 返回三个值：移位后的新实例，父实例，转换方法
 # 使用内置方法Transposition（不推荐）
@@ -301,7 +301,7 @@ print(segment_T1.pitch_class_series)  # 属性segment会返回新建实例时传
 ```
 ### 5.翻转操作R（Retrograde with rhyme）
 该方法返回翻转后创建的新实例对象
-```sh
+```python
 # 使用方法Reversed()进行移位
 segment_R = reversed(pitch_class_series)
 # 使用方法Retrograde_with_rhyme()
@@ -314,7 +314,7 @@ print(segment_R.pitch_class_series)
 ```
 
 传入参数，使其翻转后直接做移位变换（T）
-```sh
+```python
 print(series.Retrograde_with_rhythm(3))
 ```
 输出：
@@ -323,7 +323,7 @@ print(series.Retrograde_with_rhythm(3))
 ```
 ### 6.翻转操作R（Retrograde without rhyme）
 该方法返回翻转后创建的新实例对象
-```sh
+```python
 # 使用方法Retrograde_without_rhyme()
 segment_R = pitch_class_series.Retrograde_without_rhythm()
 print(segment_R.pitch_class_series)
@@ -333,7 +333,7 @@ print(segment_R.pitch_class_series)
 [[69, 58, 65, 60], ['1', '1', '3/2', '1/2']]  # 时值不随之翻转
 ```
 可以传入参数，使其翻转后直接做移位变换（T）
-```sh
+```python
 print(pitch_class_series.Retrograde_without_rhythm(3))
 ```
 输出：
@@ -342,7 +342,7 @@ print(pitch_class_series.Retrograde_without_rhythm(3))
 ```
 ### 7.倒影操作I（Inversion）
 该方法返回倒影后创建的新实例对象
-```sh
+```python
 # 使用方法Inversion()
 segment_I = pitch_class_series.Inversion(60)
     print(segment_I.pitch_class_series)
@@ -353,7 +353,7 @@ segment_I = pitch_class_series.Inversion(60)
 ```
 ### 8.翻转倒影操作RI（Retrograde Inversion）
 该方法返回翻转倒影后创建的新实例对象
-```sh
+```python
 # 使用方法RetrogradeInversion()
 segment_RI = pitch_class_series.RetrogradeInversion(60)
     print(segment_RI.pitch_class_series)
@@ -364,7 +364,7 @@ segment_RI = pitch_class_series.RetrogradeInversion(60)
 ```
 ### 9.轮转操作（Rotation without rhyme）
 该方法返回移位后创建的新实例对象
-```sh
+```python
 # 使用方法Rotation_without_rhyme()
 segment_I = pitch_class_series.Rotation_without_rhythm(60)
 print(segment_I.pitch_class_series)
