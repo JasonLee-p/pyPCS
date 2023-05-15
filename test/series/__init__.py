@@ -15,12 +15,3 @@ Available packages:
     PitchSegment, PitchClassSeries, ContourSegment
 """
 
-from .test_series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
-from .test_series2d import PitchSegment, ContourSegment
-from .test_tree import MainTree
-
-__all__ = {
-    "PitchSeries", "Rhythm", "Chord", "PitchClassSeries",
-    "PitchSegment", "PitchClassSeries", "ContourSegment",
-    "MainTree",
-}

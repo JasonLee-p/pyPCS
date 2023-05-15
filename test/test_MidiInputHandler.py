@@ -8,16 +8,13 @@ import logging
 import sys
 import time
 import rtmidi
-
-midiout = rtmidi.MidiOut()
-available_ports = midiout.get_ports()
+midiout = rtmidi.RtMidiOut()
+available_ports = midiout.getPortCount()
 
 if available_ports:
-    midiout.open_port(0)
+    midiout.openPort(0)
 else:
-    midiout.open_virtual_port("My virtual output")
-
-from rtmidi.midiutil import open_midiinput
+    midiout.openVirtualPort("My virtual output")
 
 log = logging.getLogger('midiin_callback')
 logging.basicConfig(level=logging.DEBUG)

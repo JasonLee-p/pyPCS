@@ -46,11 +46,11 @@ class PitchSegment:
         :param new_tree: If you want to set a new tree of segments and set this one as the parent, set it as True
         """
 
-        if new_tree is True and name is True:
+        if new_tree and name:
             raise ValueError("You shouldn't change '__name' default value.")
         elif new_tree is False and name is False:
             raise ValueError("You haven't set '__name', which is necessary when 'new_tree' is False.")
-        elif new_tree is True:
+        elif new_tree:
             self.parent = None
             self.name = input("Enter the name of the PitchSegment tree:\n")
             self.tree = SegmentTree(self)
@@ -62,7 +62,7 @@ class PitchSegment:
         else:
             raise ValueError("Invalid tree_name")
         # TODO: 检查节奏和音集长度是否相等
-        self.pitch_series = segment[0]  # 音集对象
+        self.pitchSeries = segment[0]  # 音集对象
         self.rhythm = segment[1]  # 节奏对象
         self.pitch_set = segment[0].series  # 音集列表
         self.duration_set = segment[1].rhythm  # 节奏列表
@@ -129,7 +129,7 @@ class PitchSegment:
         :param add_pitch: Transposition num.
         :return: Transposed new PitchSegment object_.
         """
-        new_ps = self.pitch_series.Transposition(add_pitch)
+        new_ps = self.pitchSeries.Transposition(add_pitch)
         return PitchSegment([new_ps, self.rhythm],
                             new_tree=False, parent=self, name=f"Transposition{add_pitch % 12}")
 
@@ -141,7 +141,7 @@ class PitchSegment:
         :param add_pitch: Transposition num.
         :return: Retrograded new PitchSegment object_.
         """
-        new_ps = reversed(self.pitch_series)
+        new_ps = reversed(self.pitchSeries)
         new_r = reversed(self.rhythm)
         if add_pitch == 0:
             return PitchSegment([new_ps, new_r],
@@ -157,7 +157,7 @@ class PitchSegment:
         :param add_pitch: Transposition num.
         :return: Retrograded new PitchSegment object_.
         """
-        new_ps = reversed(self.pitch_series)
+        new_ps = reversed(self.pitchSeries)
         if add_pitch == 0:
             return PitchSegment([new_ps, self.rhythm],
                                 new_tree=False, parent=self, name="Retrograde (without pitch_class_series)")
@@ -172,7 +172,7 @@ class PitchSegment:
         :param axes: An int to invert each pitch in the set.
         :return: Inverted new PitchSegment object_.
         """
-        new_ps = self.pitch_series.Inversion(axes)
+        new_ps = self.pitchSeries.Inversion(axes)
         return PitchSegment([new_ps, self.rhythm],
                             new_tree=False, parent=self, name=f"Inversion{axes}")
 
@@ -183,7 +183,7 @@ class PitchSegment:
         :param axes: An int to invert each pitch in the set.
         :return: Retrograde then Inversion new PitchSegment object_.
         """
-        new_ps_i = self.pitch_series.Inversion(axes)
+        new_ps_i = self.pitchSeries.Inversion(axes)
         new_ps_ir = new_ps_i.Retrograde()
         new_rhythm = reversed(self.rhythm)
         return PitchSegment([new_ps_ir, new_rhythm],
@@ -199,7 +199,7 @@ class PitchSegment:
         """
         if not 0 <= num < self.length:
             raise ValueError("The attribute 'num' should be smaller than length of the series.")
-        new_ps = self.pitch_series.Rotation(num=num, add_pitch=add_pitch)
+        new_ps = self.pitchSeries.Rotation(num=num, add_pitch=add_pitch)
         if add_pitch == 0:
             return PitchSegment([new_ps, self.rhythm],
                                 new_tree=False, parent=self, name=f"Rotation{num} (without pitch_class_series)")
@@ -217,7 +217,7 @@ class PitchSegment:
         """
         if not 0 <= num < self.length:
             raise ValueError("The attribute 'num' should be smaller than length of the series.")
-        new_ps = self.pitch_series.Rotation(num=num, add_pitch=add_pitch)
+        new_ps = self.pitchSeries.Rotation(num=num, add_pitch=add_pitch)
         new_r = self.rhythm.Rotation(num)
         if add_pitch == 0:
             return PitchSegment([new_ps, new_r],
@@ -242,7 +242,9 @@ class PitchSegment:
     def __hash__(self):
         return hash(self.segment)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Union[list, PitchSegment]):
+        if type(other) == list:
+            return self.segment == other
         return self.segment == other.segment
 
     def __len__(self):
@@ -253,13 +255,13 @@ class PitchSegment:
 
     @once_per_arg
     def __add__(self, add_pitch: int) -> PitchSegment:
-        new_ps = self.pitch_series.Transposition(add_pitch)
+        new_ps = self.pitchSeries.Transposition(add_pitch)
         return PitchSegment([new_ps, self.rhythm],
                             new_tree=False, parent=self, name=f"Transposition{add_pitch}")
 
     @once_per_arg
     def __sub__(self, sub_pitch: int) -> PitchSegment:
-        new_ps = self.pitch_series.Transposition(sub_pitch)
+        new_ps = self.pitchSeries.Transposition(sub_pitch)
         return PitchSegment([new_ps, self.rhythm],
                             new_tree=False, parent=self, name=f"Transposition{12 - sub_pitch}")
 
@@ -278,14 +280,14 @@ class PitchSegment:
         new_pitch_set = self.pitch_set
         new_pitch_set[key] = value
         new_pitch_series = ps.PitchSeries(
-            new_pitch_set, new_tree=False, parent=self.pitch_series, name=f"Reset pitch[{key}]{note_value[value]}")
+            new_pitch_set, new_tree=False, parent=self.pitchSeries, name=f"Reset pitch[{key}]{note_value[value]}")
         return PitchSegment(
             [new_pitch_series, self.rhythm],
             new_tree=False, parent=self, name=f"Reset pitch[{key}]{note_value[value]}")
 
     @once_per_arg
     def __reversed__(self) -> PitchSegment:
-        new_ps = reversed(self.pitch_series)
+        new_ps = reversed(self.pitchSeries)
         new_r = reversed(self.rhythm)
         return PitchSegment([new_ps, new_r],
                             new_tree=False, parent=self, name="Retrograde (with pitch_class_series)")

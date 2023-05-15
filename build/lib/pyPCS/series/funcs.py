@@ -196,7 +196,7 @@ def get_segments_subsegment(ps, start_time, finish_time=None):
     if float(start_time) == total_duration:
         raise ValueError("Start time should be smaller than total duration.")
     if finish_time > total_duration:
-        # print(sum([float(i) for i in ps[1]]))
+        # print(sum([float(i) for i in pSeg[1]]))
         raise ValueError("Finish time should be smaller than the total duration of the pitch series.")
     duration_set = ps[1]
     result_ps = [[], []]

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Union
 import numpy as _np
 
 import pyPCS.series.series2d as s2  # 避免循环调用错误，不使用from语法
@@ -145,7 +145,7 @@ class PitchSeries:
         :param pg_player: Pygame.midi.Output(int). If you haven't set it, keep it None.
             eg:
             player = pygame.midi.output(0)
-            ps.play(pg_player=player)
+            pSeg.play(pg_player=player)
         :param bpm: Beats per minutes.
         :param instrument: instrument.
         """
@@ -156,8 +156,11 @@ class PitchSeries:
     def __hash__(self):
         return hash(self.series)
 
-    def __eq__(self, other):
-        return self.series == other.compared_segment
+    def __eq__(self, other: Union[PitchSeries, list]):
+        if type(other) == list:
+            return self.series == other
+        else:
+            return self.series == other.series
 
     def __len__(self):
         return len(self.series)
@@ -274,10 +277,9 @@ class Rhythm:
         return hash(self.rhythm)
 
     def __eq__(self, other):
-        if type(other) is Rhythm:
-            return self.rhythm == other.rhythm
-        if type(other) is list[str]:
+        if type(other) is list:
             return self.rhythm == other
+        return self.rhythm == other.rhythm
 
     def __len__(self):
         return len(self.rhythm)
@@ -319,7 +321,7 @@ class Chord:
         self.colour_hua = chord_colour_hua(pitch_group)
         self.consonance_tian = chord_consonance_tian(pitch_group, self.type)
         self.dissonance = chord_dissonance(pitch_group)
-        self.colour_tian = self.consonance_tian, self.colour_hua
+        self.colour_tian_CentralOnC = self.consonance_tian, self.colour_hua
         # if self.type == "Unable to recognize":
         #     return
         # if _len := len(str(self.dissonance)) == 4:

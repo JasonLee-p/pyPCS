@@ -1,5 +1,5 @@
-# pyPCS —— A professional post tonal music analyzer (unfinished)
-### pyPCS —— 专业的无调性音乐分析工具（未完成）
+# pyPCS —— A professional music analyzer (unfinished)
+### pyPCS —— 旨在建立一个专业的音乐分析工具（未完成）
 
 [![Release](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
 
@@ -10,7 +10,8 @@
 
 ## 简体中文
 
-PCS 指的是音级集合（Pitch-class set)，这个概念已经在音乐分析种被广泛地使用了 ，因此借PCS之名。
+###### PCS 指的是音级集合（Pitch-class set)，是一个使用非常广泛的概念 ，因此借PCS之名。
+
 
 ## 目录
 
@@ -19,8 +20,6 @@ PCS 指的是音级集合（Pitch-class set)，这个概念已经在音乐分析
 - [使用](#三.使用)
 
 ## 一.背景
-
-现如今，AI爆火，其在曲目分析和作曲方面也有广阔的前景
 
 pyPCS旨在创建 一个用于乐理研究人士的趁手的分析工具 和 一个小型音乐片段生成器（基于随机生成后条件筛选）
 

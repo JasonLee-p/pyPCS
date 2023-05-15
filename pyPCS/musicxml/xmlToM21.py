@@ -2875,7 +2875,7 @@ class MeasureParser(XMLParserBase):
         seenArticulations = set()
         seenExpressions = set()
 
-        sortKey = lambda x: x.pitch.ps if hasattr(x, 'pitch') else x.displayPitch().midi
+        sortKey = lambda x: x.pitch.pSeg if hasattr(x, 'pitch') else x.displayPitch().midi
 
         for n in sorted(notes, key=sortKey):
             ss = n.getSpannerSites()
