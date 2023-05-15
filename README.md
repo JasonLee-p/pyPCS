@@ -43,15 +43,15 @@ import pyPCS
 ### 目录
 
 ##### 一维数据结构
-- [PitchSeries](#（一）类 PitchSeries)
-- [Rhythm](#（二）类 Rhythm)
-- [Chord](#（三）类 Chord)
-- [PitchClassSeries](#（四）类 PitchClassSeries)
+- [PitchSeries](#（一）PitchSeries)
+- [Rhythm](#（二）Rhythm)
+- [Chord](#（三）Chord)
+- [PitchClassSeries](#（四）PitchClassSeries)
 ##### 二维数据结构：
-- [PitchSegment](#（五）类 PitchSegment)
+- [PitchSegment](#（五）PitchSegment)
 
 
-* ## （一）类 PitchSeries
+* ## （一）PitchSeries
 ###### Pitch series 意为音高序列，即一组有序的音高
 * ### 属性
 
@@ -91,7 +91,7 @@ len()：获取音集的音符数量。
 
 reversed()：将音集倒序，返回一个新的类对象，不会改变原来的类对象。
 
-* ## （二）类 Rhythm
+* ## （二）Rhythm
 * ### 属性
 
 rhythm：时值列表
@@ -124,7 +124,7 @@ len()：获取音集的音符数量。
 
 reversed()：翻转，返回一个新的类对象，不会改变原来的类对象。
 
-* ## （三）类 Chord
+* ## （三）Chord
 * ### 属性
 pitch_group：返回音符列表
 
@@ -169,7 +169,7 @@ play():利用pygame播放该对象。强烈建议在全局用pygame.midi.Output(
 
 len()：获取音符数量。
 
-* ## （四）类 PitchClassSeries
+* ## （四）PitchClassSeries
 
 * ### 属性
 
@@ -206,7 +206,7 @@ len()：获取音集的音符数量。
 reversed()：将音级倒序，返回一个新的类对象，不会改变原来的类对象。
 
 
-* ## （五）类 PitchSegment
+* ## （五）PitchSegment
 ###### Pitch segment 意为音高截段，相关名词可以参考文献《Introduction to Post-Tonal Theory》（《后调性理论导论》）
 PitchSegment 是一个用于处理有序的音集的 Python 类，使用前需要先建立PitchSeries和Rhythm对象再传入。
 * ### 属性
