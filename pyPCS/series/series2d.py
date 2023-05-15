@@ -104,6 +104,7 @@ class PitchSegment:
     def getSubsegment(self, start_beat, end_beat=None):
         """
         This attribute returns a pitch series list.
+
         :param start_beat:Start beat.
         :param end_beat:End beat.
         :return:New PitchSegment object which is the subsegment of the original one.
@@ -120,16 +121,11 @@ class PitchSegment:
     def get_average(self) -> float:
         return self.w_average
 
-    def get_pitch_tend(self) -> float:
-        return self.pitch_tend
-
-    def get_rhythm_intensity_tend(self) -> float:
-        return self.rhythm_intensity_tend
-
     @once_per_arg
     def Transposition(self, add_pitch: int) -> PitchSegment:
         """
         This function creates a Transposition transformation of self.
+
         :param add_pitch: Transposition num.
         :return: Transposed new PitchSegment object_.
         """
@@ -141,6 +137,7 @@ class PitchSegment:
     def Retrograde_with_rhythm(self, add_pitch: int = 0) -> PitchSegment:
         """
         This function creates a Retrograde transformation of self with changed pitch_class_series.
+
         :param add_pitch: Transposition num.
         :return: Retrograded new PitchSegment object_.
         """
@@ -294,7 +291,7 @@ class PitchSegment:
                             new_tree=False, parent=self, name="Retrograde (with pitch_class_series)")
 
 
-# 有序的音集（截段）
+# 有序的音集（截段），这个是一个不实例化节奏和音级集合的版本，暂时不用
 class _PitchSegment:
     """
     Any function that change the series list return a new object_ of a class (may not be PitchSegment):
