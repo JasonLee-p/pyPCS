@@ -52,7 +52,7 @@ import pyPCS
 
 
 ## （一）PitchSeries
-    ###### Pitch series 意为音高序列，即一组有序的音高
+  ###### Pitch series 意为音高序列，即一组有序的音高
    * ### 属性
 
     series：音高列表
