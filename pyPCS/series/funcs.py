@@ -417,15 +417,17 @@ def chord_dissonance(chord: List[int]):
     return _np.mean(dissonance_group).round(2)
 
 
-def chord_consonance_tian(chord: List[int], chord_typ: str) -> float:
+def chord_consonance_tian(chord: List[int]) -> float:
     # 得到音级集合pc_group
     pc_group = sorted(to_pc_set(chord))
     # 得到五度圈跨度fifth_span
     f_spans = []
     for n in pc_group:
-        f_spans.append(note_cof_value[n])
+        if note_cof_value[n] not in f_spans:
+            f_spans.append(note_cof_value[n])
+    _len = len(f_spans)
     span_g = []
-    for i1 in range(len(f_spans)):
+    for i1 in range(_len):
         f_spans[0] = f_spans[0] + 12
         span = _np.max(f_spans) - _np.min(f_spans)
         f_spans.sort()
@@ -508,13 +510,26 @@ def chord_consonance_tian(chord: List[int], chord_typ: str) -> float:
             else:
                 return 4.33
         elif semitone_num == 2:
-            # TODO: 如何理解常规和弦和复杂和弦？
-            if not chord_typ:  # TODO: 传入的chord_typ尚未把所有常规和弦实装
+            if fifth_span != 7:
                 if major2 <= 2 and contain_M_m_3chord:
                     return 3
                 elif major2 > 2 or not contain_M_m_3chord:
                     return 2.75
             else:
+                span_contains_7 = False
+                for i in range(len(f_spans)):
+                    for j in range(len(f_spans)):
+                        if i - j == 7:
+                            span_contains_7 = True
+                            break
+                    if span_contains_7:
+                        break
+                if not span_contains_7:
+                    if major2 <= 2 and contain_M_m_3chord:
+                        return 3
+                    elif major2 > 2 or not contain_M_m_3chord:
+                        return 2.75
+                # 复杂和弦
                 if major2 <= 3 and contain_M_m_3chord:
                     return 2.5
                 elif major2 > 3 or not contain_M_m_3chord:
@@ -560,7 +575,10 @@ def chord_consonance_tian(chord: List[int], chord_typ: str) -> float:
 
 
 def chord_colour_hua(chord: List[int]) -> float:
-    _chord_colour_hua = [math.degrees(note_cof_angle[note % 12]) for note in chord]
+    _chord_colour_hua = []
+    for note in chord:
+        if (value := math.degrees(note_cof_angle[note % 12])) not in _chord_colour_hua:
+            _chord_colour_hua.append(value)
     return float(_np.mean(_chord_colour_hua))
 
 

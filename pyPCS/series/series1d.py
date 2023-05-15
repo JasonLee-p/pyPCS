@@ -319,9 +319,9 @@ class Chord:
         self.root_note = root_note_PH(pitch_group)
         self.colour_k = chord_colour_k(to_pc_set(pitch_group))
         self.colour_hua = chord_colour_hua(pitch_group)
-        self.consonance_tian = chord_consonance_tian(pitch_group, self.type)
+        self.consonance_tian = chord_consonance_tian(pitch_group)
         self.dissonance = chord_dissonance(pitch_group)
-        self.colour_tian_CentralOnC = self.consonance_tian, self.colour_hua
+        self.colour_tian = self.consonance_tian, self.colour_hua
         # if self.type == "Unable to recognize":
         #     return
         # if _len := len(str(self.dissonance)) == 4:
