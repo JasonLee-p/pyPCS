@@ -43,12 +43,12 @@ import pyPCS
 ### 目录
 
 ##### 一维数据结构:
-  - [PitchSeries](#1.PitchSeries)
-  - [Rhythm](#2.Rhythm)
-  - [Chord](#3.Chord)
-  - [PitchClassSeries](#4.PitchClassSeries)
+  - [1.PitchSeries](#1.PitchSeries)
+  - [2.Rhythm](#2.Rhythm)
+  - [3.Chord](#3.Chord)
+  - [4.PitchClassSeries](#4.PitchClassSeries)
 ##### 二维数据结构：
-  - [PitchSegment](#5.PitchSegment)
+  - [5.PitchSegment](#5.PitchSegment)
 
 
 ## 1.PitchSeries
