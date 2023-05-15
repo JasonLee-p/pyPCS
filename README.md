@@ -44,11 +44,12 @@ import pyPCS
 
 ##### 一维数据结构:
   - [1.PitchSeries](#1.PitchSeries)
-  - [2.Rhythm](#2.Rhythm)
-  - [3.Chord](#3.Chord)
-  - [4.PitchClassSeries](#4.PitchClassSeries)
+音高序列
+  - [2.Rhythm](#2.Rhythm) 时值序列
+  - [3.Chord](#3.Chord) 和弦
+  - [4.PitchClassSeries](#4.PitchClassSeries) 音级序列
 ##### 二维数据结构：
-  - [5.PitchSegment](#5.PitchSegment)
+  - [5.PitchSegment](#5.PitchSegment) 截段
 
 
 ## 1.PitchSeries
