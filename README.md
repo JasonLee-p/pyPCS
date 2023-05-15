@@ -15,9 +15,9 @@
 
 ## 目录
 
-- [背景](#一.背景)
-- [安装](#二.安装)
-- [使用](#三.使用)
+  - [背景](#一.背景)
+  - [安装](#二.安装)
+  - [使用](#三.使用)
 
 ## 一.背景
 
@@ -42,16 +42,16 @@ import pyPCS
 ```
 ### 目录
 
-##### 一维数据结构
-- [（一）PitchSeries](#（一）PitchSeries)
-- [（二）Rhythm](#（二）Rhythm)
-- [（三）Chord](#（三）Chord)
-- [（四）PitchClassSeries](#（四）PitchClassSeries)
+##### 一维数据结构:
+  - [PitchSeries](#1.PitchSeries)
+  - [Rhythm](#2.Rhythm)
+  - [Chord](#3.Chord)
+  - [PitchClassSeries](#4.PitchClassSeries)
 ##### 二维数据结构：
-- [（五）PitchSegment](#（五）PitchSegment)
+  - [PitchSegment](#5.PitchSegment)
 
 
-## （一）PitchSeries
+## 1.PitchSeries
   ###### Pitch series 意为音高序列，即一组有序的音高
    * ### 属性
 
@@ -91,7 +91,7 @@ import pyPCS
     
     reversed()：将音集倒序，返回一个新的类对象，不会改变原来的类对象。
 
-## （二）Rhythm
+## 2.Rhythm
    * ### 属性
 
     rhythm：时值列表
@@ -124,7 +124,7 @@ import pyPCS
     
     reversed()：翻转，返回一个新的类对象，不会改变原来的类对象。
 
-## （三）Chord
+## 3.Chord
    * ### 属性
     pitch_group：返回音符列表
     
@@ -169,7 +169,7 @@ import pyPCS
     
     len()：获取音符数量。
 
-## （四）PitchClassSeries
+## 4.PitchClassSeries
 
    * ### 属性
     
@@ -205,7 +205,7 @@ import pyPCS
     
     reversed()：将音级倒序，返回一个新的类对象，不会改变原来的类对象。
 
-## （五）PitchSegment
+## 5.PitchSegment
 ###### Pitch segment 意为音高截段，相关名词可以参考文献《Introduction to Post-Tonal Theory》（《后调性理论导论》）
 PitchSegment 是一个用于处理有序的音集的 Python 类，使用前需要先建立PitchSeries和Rhythm对象再传入。
     
