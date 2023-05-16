@@ -43,89 +43,15 @@ import pyPCS
 ### 目录
 
 ##### 一维数据结构:
-  - [1.PitchSeries](#1.PitchSeries)
-音高序列
-  - [2.Rhythm](#2.Rhythm) 时值序列
-  - [3.Chord](#3.Chord) 和弦
+  - [1.Chord](#1.Chord) 和弦
+  - [2.PitchSeries](#2.PitchSeries)音高序列
+  - [3.Rhythm](#3.Rhythm) 时值序列
   - [4.PitchClassSeries](#4.PitchClassSeries) 音级序列
 ##### 二维数据结构：
   - [5.PitchSegment](#5.PitchSegment) 截段
 
 
-## 1.PitchSeries
-  ###### Pitch series 意为音高序列，即一组有序的音高
-   * ### 属性
-
-    series：音高列表
-    
-    length：音符数量。
-    
-    average：平均音高。
-    
-    pitch_tend：音高趋向性。（*自定义的算法）
-
-   * ### 方法
-
-    play():利用pygame播放该对象。强烈建议在全局用pygame.midi.Output()方法设置输出端口并传入。
-
-   * ### 运算
-
-    Transposition()：变换音集的音高
-    
-    Retrograde()：翻转
-    
-    Inversion()：倒影
-    
-    RetrogradeInversion()：翻转倒影
-    
-    Rotation()：轮转
-
-   * ### 魔术方法
-
-    作为迭代器使用：返回音高。
-    
-    加减运算符：返回音符被运算后的新对象，不会改变原来的类对象的值。
-    
-    更改索引值：改变音集的某一个音高，返回一个新的类对象，不会改变原来的类对象。
-    
-    len()：获取音集的音符数量。
-    
-    reversed()：将音集倒序，返回一个新的类对象，不会改变原来的类对象。
-
-## 2.Rhythm
-   * ### 属性
-
-    rhythm：时值列表
-    
-    length：音符数量
-    
-    average：平均音高
-    
-    total_duration：总时值（拍）
-    
-    rhythm_intensity_tend：密度趋向性。（*自定义的算法）
-
-   * ### 方法
-
-    play():利用pygame播放该对象。强烈建议在全局用pygame.midi.Output()方法设置输出端口并传入。
-
-   * ### 运算
-
-    Retrograde()：翻转
-    
-    Rotation()：轮转
-
-   * ### 魔术方法
-
-    作为迭代器使用：返回时值。
-    
-    更改索引值：改变音集的某一个音高，返回一个新的类对象，不会改变原来的类对象。
-    
-    len()：获取音集的音符数量。
-    
-    reversed()：翻转，返回一个新的类对象，不会改变原来的类对象。
-
-## 3.Chord
+## 1.Chord
    * ### 属性
     pitch_group：返回音符列表
     
@@ -169,6 +95,80 @@ import pyPCS
     大于号小于号：对两个Chord对象的平均音高进行比较
     
     len()：获取音符数量。
+
+
+## 2.PitchSeries
+  ###### Pitch series 意为音高序列，即一组有序的音高
+   * ### 属性
+
+    series：音高列表
+    
+    length：音符数量。
+    
+    average：平均音高。
+    
+    pitch_tend：音高趋向性。（*自定义的算法）
+
+   * ### 方法
+
+    play():利用pygame播放该对象。强烈建议在全局用pygame.midi.Output()方法设置输出端口并传入。
+
+   * ### 运算
+
+    Transposition()：变换音集的音高
+    
+    Retrograde()：翻转
+    
+    Inversion()：倒影
+    
+    RetrogradeInversion()：翻转倒影
+    
+    Rotation()：轮转
+
+   * ### 魔术方法
+
+    作为迭代器使用：返回音高。
+    
+    加减运算符：返回音符被运算后的新对象，不会改变原来的类对象的值。
+    
+    更改索引值：改变音集的某一个音高，返回一个新的类对象，不会改变原来的类对象。
+    
+    len()：获取音集的音符数量。
+    
+    reversed()：将音集倒序，返回一个新的类对象，不会改变原来的类对象。
+
+## 3.Rhythm
+   * ### 属性
+
+    rhythm：时值列表
+    
+    length：音符数量
+    
+    average：平均音高
+    
+    total_duration：总时值（拍）
+    
+    rhythm_intensity_tend：密度趋向性。（*自定义的算法）
+
+   * ### 方法
+
+    play():利用pygame播放该对象。强烈建议在全局用pygame.midi.Output()方法设置输出端口并传入。
+
+   * ### 运算
+
+    Retrograde()：翻转
+    
+    Rotation()：轮转
+
+   * ### 魔术方法
+
+    作为迭代器使用：返回时值。
+    
+    更改索引值：改变音集的某一个音高，返回一个新的类对象，不会改变原来的类对象。
+    
+    len()：获取音集的音符数量。
+    
+    reversed()：翻转，返回一个新的类对象，不会改变原来的类对象。
 
 ## 4.PitchClassSeries
 
