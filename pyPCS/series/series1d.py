@@ -4,6 +4,7 @@ import json
 import os.path
 from typing import List, Union
 import numpy as _np
+from PIL import ImageTk
 
 import pyPCS.series.series2d as s2  # 避免循环调用错误，不使用from语法
 from .._player import play_chord
@@ -314,7 +315,14 @@ class Rhythm:
 
 
 class Chord:
+    from PIL import Image
     all_chords = []
+    abs_dir = os.path.dirname(__file__)
+    pc2position = {
+        0: (250, 109), 7: (321, 128), 2: (372, 179), 9: (391, 250), 4: (372, 321), 11: (321, 372),
+        6: (250, 391), 1: (179, 372), 8: (128, 321), 3: (109, 250), 10: (128, 179), 5: (179, 128)
+    }
+    _im = Image.open(os.path.join(os.path.dirname(abs_dir), 'circle_of_fifth.png'))
 
     @staticmethod
     def get_colourTian_from_chromaVector(cv):
@@ -329,11 +337,48 @@ class Chord:
             chordsAttr = json.loads(f)
         return chordsAttr[chord_name][1]
 
+    @staticmethod
+    def show_circle_of_fifths(*chord_obj, bg='Beige'):
+        import tkinter as tk
+        root = tk.Tk()
+        img = ImageTk.PhotoImage(Chord._im)
+        root.title("Chord circle of fifth")
+        root.configure(bg=bg, height=600, width=500)
+        root.iconphoto(True, img)
+        main_cv_with_sb = tk.Canvas()
+        for chord in chord_obj:
+            canvas = tk.Canvas(root, bg=bg, highlightthickness=0, height=600, width=500)
+            canvas.create_image(250, 250, image=img)
+            canvas.create_text(250, 535, text=chord.type, font=('Arial', 20), anchor='center')
+            # 根据和弦画点连线
+            for i in range(12):
+                if i in chord.pitch_class_group:
+                    canvas.create_oval(
+                        Chord.pc2position[i][0]-9, Chord.pc2position[i][1]-9,
+                        Chord.pc2position[i][0]+9, Chord.pc2position[i][1]+9,
+                        fill='firebrick', outline='firebrick')
+                else:
+                    canvas.create_oval(
+                        Chord.pc2position[i][0] - 5, Chord.pc2position[i][1] - 5,
+                        Chord.pc2position[i][0] + 5, Chord.pc2position[i][1] + 5,
+                        fill='black', outline='black')
+            # last_pc = pc2position[self.pitch_class_group[0]]
+            # for pc in self.pitch_class_group[1:]:
+            #     canvas.create_line(
+            #         last_pc[0], last_pc[1], pc2position[pc][0], pc2position[pc][0], fill='firebrick', width=6)
+            #     last_pc = pc2position[pc]
+            # canvas.create_line(
+            #     last_pc[0], last_pc[1],
+            #     pc2position[self.pitch_class_group[0]][0], pc2position[self.pitch_class_group[0]][0],
+            #     fill='firebrick', width=6)
+            canvas.pack(expand=True, side='left')
+        root.mainloop()
+
     def __init__(self, pitch_group):
         pitch_group = sorted(pitch_group)
         self.length = len(pitch_group)  # 获取音高列表的长度
         self.pitch_group = pitch_group
-        self.pitch_class_group = to_pc_set(pitch_group)  # 会剔除重复的对象
+        self.pitch_class_group = sorted(to_pc_set(pitch_group))  # 会剔除重复的对象
         self.chroma_vector = chroma_vector(self.pitch_class_group)
         self.type = chord_type(pitch_group)
         self.cof_span = c_span(to_pc_set(pitch_group))
@@ -357,18 +402,41 @@ class Chord:
     def get_pc_group(self):
         return PitchClassSeries(self.pitch_class_group)[:], self, "Pitch set group"
 
-    def show_circle_of_fifth(self):
-        from threading import Thread
+    def show_circle_of_fifth(self, bg='Beige'):
+        import tkinter as tk
 
-        def window():
-            import tkinter as tk
-            root = tk.Tk()
-            root.configure(bg='Beige', height=400, width=400)
-            canvas = tk.Canvas(root, bg='Beige', height=350, width=400)
-            canvas.pack(expand=True)
-            root.mainloop()
+        root = tk.Tk()
+        img = ImageTk.PhotoImage(Chord._im)
+        root.title(f"Chord {self.type}")
+        root.iconphoto(True, img)
+        root.configure(bg=bg, height=600, width=500)
 
-        Thread(target=window).start()
+        canvas = tk.Canvas(root, bg=bg, highlightthickness=0, height=600, width=500)
+        canvas.create_image(250, 250, image=img)
+        canvas.create_text(250, 535, text=self.type, font=('Arial', 20), anchor='center')
+        # 根据和弦画点连线
+        for i in range(12):
+            if i in self.pitch_class_group:
+                canvas.create_oval(
+                    Chord.pc2position[i][0]-9, Chord.pc2position[i][1]-9,
+                    Chord.pc2position[i][0]+9, Chord.pc2position[i][1]+9,
+                    fill='firebrick', outline='firebrick')
+            else:
+                canvas.create_oval(
+                    Chord.pc2position[i][0] - 5, Chord.pc2position[i][1] - 5,
+                    Chord.pc2position[i][0] + 5, Chord.pc2position[i][1] + 5,
+                    fill='black', outline='black')
+        # last_pc = pc2position[self.pitch_class_group[0]]
+        # for pc in self.pitch_class_group[1:]:
+        #     canvas.create_line(
+        #         last_pc[0], last_pc[1], pc2position[pc][0], pc2position[pc][0], fill='firebrick', width=6)
+        #     last_pc = pc2position[pc]
+        # canvas.create_line(
+        #     last_pc[0], last_pc[1],
+        #     pc2position[self.pitch_class_group[0]][0], pc2position[self.pitch_class_group[0]][0],
+        #     fill='firebrick', width=6)
+        canvas.pack(expand=True)
+        root.mainloop()
 
     def play(self, player):
         play_chord(player, self.pitch_group)

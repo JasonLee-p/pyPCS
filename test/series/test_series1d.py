@@ -1,7 +1,7 @@
 from __future__ import annotations
 import unittest
 from pyPCS import Chord
-from typing import List
+# from typing import List
 
 
 class TestChord(unittest.TestCase):
@@ -220,4 +220,6 @@ class TestChord(unittest.TestCase):
         self.assertEqual(TestChord.Cm6M9.colour_tian, (2.75, 65.0))
         self.assertEqual(TestChord.Cm67b9.colour_tian, (2.75, 135.0))
 
-        TestChord.C.show_circle_of_fifth()
+    def test_show_cof(self):
+        Chord([61, 62, 63]).show_circle_of_fifth()
+        Chord.show_circle_of_fifths(TestChord.C, TestChord.C7)

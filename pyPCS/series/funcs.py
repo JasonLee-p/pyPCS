@@ -2,7 +2,9 @@
 Basic functions:
 """
 import copy
+import json
 import math
+import os
 from fractions import Fraction
 from typing import List
 
@@ -96,12 +98,16 @@ def chroma_vector(pitch_class_group):
 def chord_type(pitch_group):
     pc_group = to_pc_set(pitch_group)
     _chroma_vector = chroma_vector(pc_group)
-    for template in chords_chroma_vector.values():
-        if template == _chroma_vector:
+    abs_dir = os.path.dirname(__file__)
+    with open(os.path.join(os.path.dirname(abs_dir), 'ChordAttr.json'), 'r') as f:
+        f = f.read()
+        chordsAttr = json.loads(f)
+    for chord_name in chordsAttr:
+        if _chroma_vector == chordsAttr[chord_name][0]:
             # 在此可以添加特殊情况
             # if:
             #     return
-            return list(chords_chroma_vector.keys())[list(chords_chroma_vector.values()).index(_chroma_vector)]
+            return chord_name
     return "Unable to recognize"
 
 
@@ -728,7 +734,7 @@ def get_chordConsonanceTian_from_chromaVector(cv: List[int]) -> float:
                     return 0.67
                 else:
                     return 0.33
-    txt = f'Failed to get consonance of the given chord {chord}'
+    txt = f'Failed to get consonance of the given chroma vector {cv}'
     raise RuntimeError(txt)
 
 
@@ -815,7 +821,3 @@ def conform_voice_leading(chord, last_chord):
         if cou_up == len(chord) or cou_dn == len(chord):
             return False
     return True
-
-
-if __name__ == "__main__":
-    chord_consonance_tian([60, 65, 67])

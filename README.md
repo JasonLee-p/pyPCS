@@ -3,6 +3,13 @@
 
 [![Release](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
 
+
+#### 目前的状态：
+
+基本功能尚未完全开发完（下面介绍的功能有的并未开发完毕），但是已经完成的模块已经上传，
+可以直接用pip指令安装该库，如果想要贡献代码可以阅读
+CONTRIBUTING.md 以了解更多。
+
 ## Choosing Language
 
 - [简体中文](#简体中文)
