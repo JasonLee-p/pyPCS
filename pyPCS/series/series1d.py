@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import os.path
 from typing import List, Union
 import numpy as _np
 
@@ -10,6 +12,8 @@ from .funcs import chord_type, to_pc_set, pc_to_circle_of_fifth_ns, tendentiousn
     get_chordConsonanceTian_from_chromaVector
 from .tree import SeriesTree, RhythmTree, PitchClassSeriesTree
 from .._basicData import note_value
+
+
 # from ..classmethod_dec import once_per_arg
 
 
@@ -313,12 +317,17 @@ class Chord:
 
     @staticmethod
     def get_colourTian_from_chromaVector(cv):
-        return get_chordConsonanceTian_from_chromaVector(cv),\
+        return get_chordConsonanceTian_from_chromaVector(cv), \
                chord_colour_hua_from_chromaVector(cv)
 
     @staticmethod
     def get_colourTian_from_chordName(chord_name):
-        ...
+        import json
+        abs_dir = os.path.dirname(__file__)
+        with open(os.path.join(os.path.dirname(abs_dir), 'ChordAttr.json'), 'r') as f:  # TODO: 相对路径
+            f = f.read()
+            chordsAttr = json.loads(f)
+        return chordsAttr[chord_name][1]
 
     def __init__(self, pitch_group):
         pitch_group = sorted(pitch_group)

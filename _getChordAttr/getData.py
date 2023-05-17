@@ -160,14 +160,14 @@ class MyEncoder(json.JSONEncoder):
         # wrapped Python object.
         for match in self.regex.finditer(json_repr):
             # see https://stackoverflow.com/a/15012814/355230
-            id = int(match.group(1))
-            no_indent = PyObj_FromPtr(id)
+            _id = int(match.group(1))
+            no_indent = PyObj_FromPtr(_id)
             json_obj_repr = json.dumps(no_indent.value, sort_keys=self.__sort_keys)
 
             # Replace the matched id string with json formatted representation
             # of the corresponding Python object.
             json_repr = json_repr.replace(
-                            '"{}"'.format(format_spec.format(id)), json_obj_repr)
+                            '"{}"'.format(format_spec.format(_id)), json_obj_repr)
 
         return json_repr
 
@@ -304,3 +304,5 @@ if __name__ == "__main__":
     with open('ChordAttr.json', 'wb') as wf:
         wf.write(json.dumps(ChordAttrs,
                             indent=2, ensure_ascii=False, cls=MyEncoder).encode('utf-8'))
+
+    print(Chord.get_colourTian_from_chordName('C'))

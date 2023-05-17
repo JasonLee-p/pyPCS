@@ -219,4 +219,3 @@ class TestChord(unittest.TestCase):
         self.assertEqual(TestChord.Cb67add11.colour_tian, (2.75, 115.0))
         self.assertEqual(TestChord.Cm6M9.colour_tian, (2.75, 65.0))
         self.assertEqual(TestChord.Cm67b9.colour_tian, (2.75, 135.0))
-
