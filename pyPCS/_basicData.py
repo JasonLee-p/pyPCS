@@ -122,6 +122,12 @@ notes_names = [
     'c', '#c', 'd', '#d', 'e', 'f', '#f', 'g', '#g', 'a', '#a', 'b'
 ]
 
+
+ChordsAttributes = {
+
+}
+
+
 chords_chroma_vector = {
     #
     #                                             三和弦

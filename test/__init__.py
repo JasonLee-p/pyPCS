@@ -79,31 +79,3 @@ If an attribute end up with "pitch_class_series",
 If an attribute end up with "series",
     it means that it'pypcs ordered and contains pitches' or pitch sets' duration.
 """
-
-from .series import PitchSegment, PitchClassSeries
-
-from .test_player import *
-
-from .test_chorder import root_note_PH, mod12
-
-__all__ = [
-    "play_note", "play_chord", "play_chord_set", "play_pitch_segment",  # _player
-    "root_note_PH", "mod12"  # chorder
-]
-from .series.test_series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
-from .series.test_series2d import PitchSegment, ContourSegment
-from .basicGenerator import get_segments_subsegment, counterpoint, random_atonal_pitch_space, \
-    randomChord, randomSegment, randomRhythm
-from .piecesGenerator import *
-
-__all__.extend(series.__all__)
-__all__.extend(basicGenerator.__all__)
-__all__.extend(piecesGenerator.__all__)
-
-
-def __dir__():
-    public_symbols = globals().keys() | {'Tester', 'testing'}  # TODO: unfinished
-    public_symbols -= {
-        "pm",
-    }
-    return list(public_symbols)

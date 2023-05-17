@@ -5,8 +5,9 @@ import numpy as _np
 import pyPCS.series.series2d as s2  # 避免循环调用错误，不使用from语法
 from .._player import play_chord
 from ..chorder import c_span, chord_colour_k, semitone_num, root_note_PH
-from .funcs import chord_type, to_pc_set, pc_to_circle_of_fifth_ns, tendentiousness, chord_dissonance,\
-    chord_colour_hua, chord_consonance_tian
+from .funcs import chord_type, to_pc_set, pc_to_circle_of_fifth_ns, tendentiousness, chord_dissonance, \
+    chord_colour_hua, chord_consonance_tian, chroma_vector, chord_colour_hua_from_chromaVector, \
+    get_chordConsonanceTian_from_chromaVector
 from .tree import SeriesTree, RhythmTree, PitchClassSeriesTree
 from .._basicData import note_value
 # from ..classmethod_dec import once_per_arg
@@ -308,11 +309,23 @@ class Rhythm:
 
 
 class Chord:
+    all_chords = []
+
+    @staticmethod
+    def get_colourTian_from_chromaVector(cv):
+        return get_chordConsonanceTian_from_chromaVector(cv),\
+               chord_colour_hua_from_chromaVector(cv)
+
+    @staticmethod
+    def get_colourTian_from_chordName(chord_name):
+        ...
+
     def __init__(self, pitch_group):
         pitch_group = sorted(pitch_group)
         self.length = len(pitch_group)  # 获取音高列表的长度
         self.pitch_group = pitch_group
         self.pitch_class_group = to_pc_set(pitch_group)  # 会剔除重复的对象
+        self.chroma_vector = chroma_vector(self.pitch_class_group)
         self.type = chord_type(pitch_group)
         self.cof_span = c_span(to_pc_set(pitch_group))
         self.semitone_num = semitone_num(to_pc_set(pitch_group))
@@ -322,6 +335,7 @@ class Chord:
         self.consonance_tian = chord_consonance_tian(pitch_group)
         self.dissonance = chord_dissonance(pitch_group)
         self.colour_tian = self.consonance_tian, self.colour_hua
+        Chord.all_chords.append(self)
         # if self.type == "Unable to recognize":
         #     return
         # if _len := len(str(self.dissonance)) == 4:

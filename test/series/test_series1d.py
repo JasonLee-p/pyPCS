@@ -25,7 +25,8 @@ class TestChord(unittest.TestCase):
     C9 = Chord([60, 62, 64, 67, 70])
     C23s4 = Chord([60, 62, 64, 66])
     Caug = Chord([60, 64, 68])
-    Caugadd9 = Chord([60, 62, 64, 68])  # TODO: add11变add9
+    Caugadd9 = Chord([60, 62, 64, 68])  # TODO:
+    Caugadd11 = Chord([60, 64, 66, 68])
     C2s4b6 = Chord([60, 62, 66, 68])
     Caugadd9s11 = Chord([60, 62, 64, 66, 68])  # TODO: add11变s11
     Cdim7 = Chord([60, 63, 66, 69])
@@ -133,6 +134,7 @@ class TestChord(unittest.TestCase):
         self.assertEqual(TestChord.C23s4.colour_tian, (8.33, 15.0))
         self.assertEqual(TestChord.Caug.colour_tian, (8, 105.0))
         self.assertEqual(TestChord.Caugadd9.colour_tian, (7.67, 90.0))
+        self.assertEqual(TestChord.Caugadd11.colour_tian, (7.67, 60.0))
         self.assertEqual(TestChord.C2s4b6.colour_tian, (7.67, 75.0))
         self.assertEqual(TestChord.Caugadd9s11.colour_tian, (7.33, 57.0))
         self.assertEqual(TestChord.Cdim7.colour_tian, (7.33, 60.0))

@@ -34,6 +34,14 @@ def to_pc_set(pitch_group, ordered=False):
         return result
 
 
+def chromaVector2pcSet(cv):
+    pc_set = []
+    for i in range(12):
+        if cv[i]:
+            pc_set.append(i)
+    return pc_set
+
+
 def contains_M_m_3chord(pc_group):
     Mm3chords = [
         [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
@@ -77,18 +85,23 @@ def contains_M_m_3chord(pc_group):
     return False
 
 
+def chroma_vector(pitch_class_group):
+    vector = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for _i in pitch_class_group:
+        vector[_i] = 1
+    return vector
+
+
 # 通过色度向量计算出和弦类型
 def chord_type(pitch_group):
     pc_group = to_pc_set(pitch_group)
-    self_template = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    for _i in pc_group:
-        self_template[_i] = 1
+    _chroma_vector = chroma_vector(pc_group)
     for template in chords_chroma_vector.values():
-        if template == self_template:
+        if template == _chroma_vector:
             # 在此可以添加特殊情况
             # if:
             #     return
-            return list(chords_chroma_vector.keys())[list(chords_chroma_vector.values()).index(self_template)]
+            return list(chords_chroma_vector.keys())[list(chords_chroma_vector.values()).index(_chroma_vector)]
     return "Unable to recognize"
 
 
@@ -437,12 +450,6 @@ def chord_consonance_tian(chord: List[int]) -> float:
     # 小二度，大二度数量
     semitone_num = 0
     major2 = 0
-    # for ii in range(len(chord)-1):
-    #     c = sorted(chord)
-    #     if c[ii + 1] - c[ii] == 1:
-    #         semitone_num += 1
-    #     if c[ii + 1] - c[ii] == 2:
-    #         major2 += 1
     if pc_group[-1] - pc_group[0] == 11:
         semitone_num += 1
     elif pc_group[-1] - pc_group[0] == 10:
@@ -456,7 +463,6 @@ def chord_consonance_tian(chord: List[int]) -> float:
     # print(f"major2:{major2}")
     # 是否有大三小三和弦：
     contain_M_m_3chord = contains_M_m_3chord(pc_group)
-    # print(f"contains Mm3 chord:{contain_M_m_3chord}")
     # 开始判断：
     if 2 <= fifth_span <= 4:
         if major2 <= 1:
@@ -571,7 +577,159 @@ def chord_consonance_tian(chord: List[int]) -> float:
                     return 0.67
                 else:
                     return 0.33
-    print(chord)
+    txt = f'Failed to get consonance of the given chord {chord}'
+    raise RuntimeError(txt)
+
+
+def get_chordConsonanceTian_from_chromaVector(cv: List[int]) -> float:
+    # 得到音级集合pc_group
+    pc_group = chromaVector2pcSet(cv)
+    # 得到五度圈跨度fifth_span
+    f_spans = []
+    for n in pc_group:
+        if note_cof_value[n] not in f_spans:
+            f_spans.append(note_cof_value[n])
+    _len = len(f_spans)
+    span_g = []
+    for i1 in range(_len):
+        f_spans[0] = f_spans[0] + 12
+        span = _np.max(f_spans) - _np.min(f_spans)
+        f_spans.sort()
+        span_g.append(span)
+    fifth_span = _np.min(span_g)
+    # print(f"fifth span:{fifth_span}")
+    # 小二度，大二度数量
+    semitone_num = 0
+    major2 = 0
+    if pc_group[-1] - pc_group[0] == 11:
+        semitone_num += 1
+    elif pc_group[-1] - pc_group[0] == 10:
+        major2 += 1
+    for ii in range(len(pc_group) - 1):
+        if pc_group[ii + 1] - pc_group[ii] == 1:
+            semitone_num += 1
+        if pc_group[ii + 1] - pc_group[ii] == 2:
+            major2 += 1
+    # print(f"semitone_num:{semitone_num}")
+    # print(f"major2:{major2}")
+    # 是否有大三小三和弦：
+    contain_M_m_3chord = contains_M_m_3chord(pc_group)
+    # 开始判断：
+    if 2 <= fifth_span <= 4:
+        if major2 <= 1:
+            if contain_M_m_3chord:
+                return 10
+            else:
+                return 9.67
+        elif 1 < major2 <= 3:
+            return 9.33
+    elif fifth_span == 5:
+        if major2 <= 1 and contain_M_m_3chord:
+            return 7
+        elif major2 == 2 and contain_M_m_3chord:
+            return 6.67
+        else:
+            return 6.33
+    elif fifth_span == 6:
+        if semitone_num == 0:
+            if major2 <= 1:
+                if contain_M_m_3chord:
+                    return 9
+                else:
+                    return 8.67
+            elif major2 == 3:
+                return 8.33
+        elif semitone_num == 1:
+            if major2 == 1 and contain_M_m_3chord:
+                return 6
+            elif major2 == 2 and contain_M_m_3chord:
+                return 5.67
+            else:
+                return 5.33
+        elif semitone_num == 2:
+            if major2 == 1 and contain_M_m_3chord:
+                return 4
+            else:
+                return 3.5
+    else:
+        if semitone_num == 0:
+            if fifth_span == 8 and major2 == 0:
+                return 8
+            elif fifth_span == 8 and major2 == 2:
+                return 7.67
+            else:
+                return 7.33
+        elif semitone_num == 1:
+            if major2 == 0 and contain_M_m_3chord:
+                return 5
+            elif major2 <= 2 and contain_M_m_3chord:
+                return 4.67
+            else:
+                return 4.33
+        elif semitone_num == 2:
+            if fifth_span != 7:
+                if major2 <= 2 and contain_M_m_3chord:
+                    return 3
+                elif major2 > 2 or not contain_M_m_3chord:
+                    return 2.75
+            else:
+                span_contains_7 = False
+                for i in range(len(f_spans)):
+                    for j in range(len(f_spans)):
+                        if i - j == 7:
+                            span_contains_7 = True
+                            break
+                    if span_contains_7:
+                        break
+                if not span_contains_7:
+                    if major2 <= 2 and contain_M_m_3chord:
+                        return 3
+                    elif major2 > 2 or not contain_M_m_3chord:
+                        return 2.75
+                # 复杂和弦
+                if major2 <= 3 and contain_M_m_3chord:
+                    return 2.5
+                elif major2 > 3 or not contain_M_m_3chord:
+                    return 2.25
+        else:
+            series2semitone = 0
+            series3semitone = 0
+            if pc_group[-1] - pc_group[0] == 11:
+                if pc_group[1] - pc_group[0] == 1 or pc_group[-1] - pc_group[-2] == 1:
+                    series2semitone += 1
+                    if pc_group[2] - pc_group[1] == pc_group[1] - pc_group[0] == 1 or \
+                            pc_group[-1] - pc_group[-2] == pc_group[-2] - pc_group[-3] == 1:
+                        series3semitone += 1
+            ii = 0
+            while ii < len(pc_group) - 2:
+                if pc_group[ii + 2] - pc_group[ii + 1] == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series2semitone += 2
+                    ii += 3
+                ii += 1
+            ii = 0
+            while ii < len(pc_group) - 3:
+                if pc_group[ii + 3] - pc_group[ii + 2] \
+                        == pc_group[ii + 2] - pc_group[ii + 1] \
+                        == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series3semitone += 1
+                    ii += 4
+                ii += 1
+            if semitone_num == 3:
+                if (not series2semitone) and (not series3semitone):
+                    return 2
+                elif series3semitone:
+                    return 1.33
+                elif series2semitone:
+                    return 1.67
+            elif semitone_num >= 4:
+                if series2semitone == 2:
+                    return 1
+                elif series3semitone:
+                    return 0.67
+                else:
+                    return 0.33
+    txt = f'Failed to get consonance of the given chord {chord}'
+    raise RuntimeError(txt)
 
 
 def chord_colour_hua(chord: List[int]) -> float:
@@ -579,7 +737,15 @@ def chord_colour_hua(chord: List[int]) -> float:
     for note in chord:
         if (value := math.degrees(note_cof_angle[note % 12])) not in _chord_colour_hua:
             _chord_colour_hua.append(value)
-    return float(_np.mean(_chord_colour_hua))
+    return round(float(_np.mean(_chord_colour_hua)), 1)
+
+
+def chord_colour_hua_from_chromaVector(cv):
+    _chord_colour_hua = []
+    for pitchClass in chromaVector2pcSet(cv):
+        if (value := math.degrees(note_cof_angle[pitchClass])) not in _chord_colour_hua:
+            _chord_colour_hua.append(value)
+    return round(float(_np.mean(_chord_colour_hua)), 1)
 
 
 def chord_colour(chord: List[int], dynamics: List[int]) -> float:

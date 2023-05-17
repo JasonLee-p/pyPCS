@@ -359,7 +359,7 @@ class XMLParserBase:
     def setStyleAttributes(self, mxObject, m21Object, musicXMLNames, m21Names=None):
         # noinspection PyShadowingNames
         '''
-        Takes an mxObject, a music21Object, and a list/tuple of musicXML names and
+        Takes an mxObject, a music21Object, and a list/tuple of musicXML ChordNames and
         a list/tuple of m21Names, and assigns each of the mxObject's attributes
         that fits this style name to the corresponding style object's m21Name attribute.
 
@@ -1380,8 +1380,8 @@ class MusicXMLImporter(XMLParserBase):
     @staticmethod
     def isRecognizableMetadataKey(miscFieldName: str) -> bool:
         '''
-        Returns bool on whether `miscFieldName` is a one of the names
-        that is among the list of names we might see in <miscellaneous>,
+        Returns bool on whether `miscFieldName` is a one of the ChordNames
+        that is among the list of ChordNames we might see in <miscellaneous>,
         that this parser will interpret as supported metadata keys.
         Currently, this is all the uniqueName keys (e.g. 'dateCreated'),
         the 'namespace:name' keys (e.g. 'dcterms:created'),
