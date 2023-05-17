@@ -1,6 +1,5 @@
 numpy~=1.24.1
 pygame~=2.1.2
-pyPCS~=0.0.1
 rtmidi~=2.5.0
 webcolors~=1.12
 setuptools~=66.1.1

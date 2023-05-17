@@ -1,2 +1,5 @@
 numpy==1.24.2
 pygame==2.3.0
+rtmidi==2.5.0
+webcolors==1.12
+Pillow==9.5.0

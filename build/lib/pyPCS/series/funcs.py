@@ -1,12 +1,27 @@
 """
 Basic functions:
 """
+import copy
+import json
+import math
+import os
+from fractions import Fraction
+from typing import List
+
 import numpy as _np
-from .._basicData import note_value, chords_chroma_vector, note_cof_value
+from .._basicData import note_value, chords_chroma_vector, note_cof_value, interval_dissonance_t1, \
+    interval_dissonance_t2, note_cof_angle
 
 
 # 音集（有序或无序）的键位音级集（若不含重复，即repeat = False，可算作无序；反之可算作有序）
-def to_pc_group(pitch_group, ordered=False):
+def to_pc_set(pitch_group, ordered=False):
+    """
+    注意，这个函数返回的 pitch segment 是无序的，如果如的音集含有重复音级的音，则会删除后面的，除非ordered参数为True
+
+    :param pitch_group:
+    :param ordered:
+    :return:
+    """
     cns = []
     if ordered is False:
         for pitch in pitch_group:
@@ -21,18 +36,78 @@ def to_pc_group(pitch_group, ordered=False):
         return result
 
 
-# 通过色度向量计算出和弦类型
-def chord_type(pitch_group):
-    pc_group = to_pc_group(pitch_group)
+def chromaVector2pcSet(cv):
+    pc_set = []
+    for i in range(12):
+        if cv[i]:
+            pc_set.append(i)
+    return pc_set
+
+
+def contains_M_m_3chord(pc_group):
+    Mm3chords = [
+        [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+        [1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1],
+        # 小和弦
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0],
+        [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+        [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    ]
     self_template = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for _i in pc_group:
         self_template[_i] = 1
-    for template in chords_chroma_vector.values():
-        if template == self_template:
+    for chroma_vector in Mm3chords:
+        counter = 0
+        judging = [self_template[i] == chroma_vector[i] == 1 for i in range(12)]
+        # print(judging)
+        for result in judging:
+            if result:
+                counter += 1
+        if counter == 3:
+            return True
+    return False
+
+
+def chroma_vector(pitch_class_group):
+    vector = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for _i in pitch_class_group:
+        vector[_i] = 1
+    return vector
+
+
+# 通过色度向量计算出和弦类型
+def chord_type(pitch_group):
+    pc_group = to_pc_set(pitch_group)
+    _chroma_vector = chroma_vector(pc_group)
+    abs_dir = os.path.dirname(__file__)
+    with open(os.path.join(os.path.dirname(abs_dir), 'ChordAttr.json'), 'r') as f:
+        f = f.read()
+        chordsAttr = json.loads(f)
+    for chord_name in chordsAttr:
+        if _chroma_vector == chordsAttr[chord_name][0]:
             # 在此可以添加特殊情况
             # if:
             #     return
-            return list(chords_chroma_vector.keys())[list(chords_chroma_vector.values()).index(self_template)]
+            return chord_name
     return "Unable to recognize"
 
 
@@ -105,14 +180,18 @@ def pitches_counter(pitch_series):
 # 音集截段的倾向性（音高，音符密集度）
 def tendentiousness(pitch_segment):
     """
-    When you use this function, the series shouldn't be too short. If too short, it'pypcs pitch tend might be meaningless.
+    When you use this function, the series shouldn't be too short.
 
-    :param pitch_segment: A list with two lists: note group(type = int) and its duration(beat, type = float)
+    If too short, it's pitch tend might be meaningless.
+
+    :param pitch_segment:
+        A list with two lists: note group(type = int) and its duration(beat, type = float)
+        or class 'PitchSegment's attribute 'pitch_class_series'.
     :return: Pitch Tendentiousness and Rhythm Intensity Tendentiousness (type = list).
     """
     # 确保传入的参数是含两个相同长度列表的列表，并且长度大于等于3，否则报错
     if len(pitch_segment[0]) != len(pitch_segment[1]):
-        raise RuntimeError("Segment'pypcs two lists' length should be the same.")
+        raise RuntimeError("Segment's two lists' length should be the same.")
     if len(pitch_segment[0]) < 3:
         raise RuntimeError("The series should contain at least 3 notes")
     # 从segment获取音符集合
@@ -169,6 +248,7 @@ def tendentiousness(pitch_segment):
 
 
 def get_intensity(pitch_segment):
+    # TODO:
     return pitch_segment
 
 
@@ -182,59 +262,76 @@ def cut(pitch_segment, position):
     return
 
 
-def get_segments_subsegment(ps, start_time, finish_time=None):
+def get_subsegment(pitch_segment: List[List],
+                   start_beat: str,
+                   end_beat=None
+                   ) -> List[List]:
     """
-    :param ps: Pitch series
-    :param start_time:Start time
-    :param finish_time:Finish time
-    :return: If start time is equal to finish time or finish time is None, it returns a pitch'pypcs value(int),
-    else, it returns a new pitch series(list with two lists inside).
+    :param pitch_segment: Pitch series, which should be a list of two lists.
+    :param start_beat:Start beat
+    :param end_beat:End beat
+    :return:
+    If start time is equal to finish time or finish time is None, it returns a pitch'pyPCS value(int),
+        else, it returns a new pitch series(list with two lists inside).
     """
-    total_duration = sum([float(ii) for ii in ps[1]])
-    if finish_time < start_time:
-        raise ValueError("Finish time should be larger than start time.")
-    if float(start_time) == total_duration:
-        raise ValueError("Start time should be smaller than total duration.")
-    if finish_time > total_duration:
-        # print(sum([float(i) for i in pSeg[1]]))
-        raise ValueError("Finish time should be smaller than the total duration of the pitch series.")
-    duration_set = ps[1]
-    result_ps = [[], []]
-    start_index = 0
-    finish_index = 0
-    first_d = 0
-    last_d = 0
-    t = 0
-    start_cal = True
-    for ii in range(len(duration_set)):
-        t += duration_set[ii]
-        if t > finish_time:
-            if start_time == finish_time or finish_time is None:
-                return ps[0][ii]
-            finish_index = ii
-            last_d = t - finish_time
+    pitch_s, r = pitch_segment
+    total_duration = sum([Fraction(d) for d in r])
+    all_nodes = [Fraction(0)]
+    cou = Fraction(0)
+    for i in r:
+        cou += Fraction(i)
+        all_nodes.append(copy.deepcopy(cou))
+
+    # 确定start_index，初始化start_duration
+    start_index = None
+    start_beat = Fraction(start_beat)
+    if start_beat > total_duration:  # ValueError
+        raise ValueError("The start_beat should be larger than total duration of the series.")
+    if start_beat == total_duration and end_beat is None:  # 当求的是最后时刻的音高：
+        return [[pitch_s[-1]], ['0']]
+    for node in reversed(all_nodes):
+        if start_beat >= node:
+            start_index = all_nodes.index(node)
             break
-        if t == finish_time:
-            if start_time == finish_time or finish_time is None:
-                return ps[0][ii + 1]
-            finish_index = ii
-            last_d = t - start_time
-            break
-        if t > start_time and start_cal:
-            start_index = ii
-            first_d = t - start_time
-            start_cal = 0
-    if not start_index:
-        return [[ps[0][finish_index]], [str(last_d)]]
-    for ii in range(start_index, finish_index + 1):
-        result_ps[0].append(ps[0][ii])
-        if ii == start_index:
-            result_ps[1].append(str(first_d))
-        elif ii == finish_index:
-            result_ps[1].append((str(last_d)))
-        else:
-            result_ps[1].append(str(duration_set[ii]))
-    return result_ps
+    start_duration = all_nodes[start_index + 1] - start_beat
+
+    if end_beat is None:
+        return [pitch_s[start_index], ['0']]
+    else:
+        if end_beat > total_duration:  # ValueError
+            raise ValueError("The end_beat should be larger than total duration of the series.")
+        end_beat = Fraction(end_beat)
+
+    # 确定end_index，初始化end_duration
+    end_index = None
+    if total_duration - Fraction(r[-1]) < end_beat <= total_duration:
+        end_index = len(r) - 1
+    else:
+        for node in reversed(all_nodes):
+            if end_beat > node:
+                end_index = all_nodes.index(node)
+                break
+    end_duration = end_beat - all_nodes[end_index]
+    # print(all_nodes[end_index])
+
+    # 计算最终结果：
+    sub_ps = pitch_s[start_index:end_index + 1]  # 最后一个索引会丢失，所以+1
+    sub_r = r[start_index:end_index + 1]  # 最后一个索引会丢失，所以+1
+    if start_beat in all_nodes and end_beat in all_nodes:  # 如果没有音符被start_index和end_index截断
+        pass
+    else:  # 如果有音符被start_beat和end_beat截断：
+        if end_index != start_index:  # 如果结果有多个音符：
+            sub_r[0] = str(start_duration)
+            sub_r[-1] = str(end_duration)
+        else:  # 如果结果只有一个音符：
+            # 三种截取点状态（是否在传入的segment的节点上）
+            if start_beat not in all_nodes and end_beat not in all_nodes:  # start和end都不在
+                sub_r = [str(end_duration + start_duration - Fraction(r[start_index]))]
+            elif start_beat in all_nodes and end_beat not in all_nodes:  # start在而end不在
+                sub_r = [str(end_duration)]
+            else:  # start不在而end在
+                sub_r = [str(start_duration)]
+    return [sub_ps, sub_r]
 
 
 """ Basic operation on Pitch-class Segment:
@@ -316,3 +413,411 @@ def pitch_class_cycles(pitch_class_series, num=0):
         pitch_class_series.append(first)
     return pitch_class_series
 
+
+def chord_dissonance(chord: List[int]):
+    chord = sorted(chord)
+    if len(chord) == 2:
+        return interval_dissonance_t2[chord[1] - chord[0]]
+    dissonance_group = _np.zeros(len(chord) - 1)
+    for i in range(len(chord) - 1, 0, -1):
+        avr = []
+        for j in range(i):
+            avr.append(interval_dissonance_t2[chord[i] - chord[j]])
+        # print(avr)
+        dissonance_group[i - 1] = _np.mean(avr)
+
+    # dissonance_group = _np.zeros(math.factorial(len(chord))//(2 * math.factorial(len(chord)-2)))
+    # counter = 0
+    # for root_i in range(len(chord)-1):
+    #     for interval_i in range(root_i+1, len(chord)):
+    #         dissonance_group[counter] = interval_dissonance_t1[(chord[interval_i]-chord[root_i])]
+    #         counter += 1
+
+    return _np.mean(dissonance_group).round(2)
+
+
+def chord_consonance_tian(chord: List[int]) -> float:
+    # 得到音级集合pc_group
+    pc_group = sorted(to_pc_set(chord))
+    # 得到五度圈跨度fifth_span
+    f_spans = []
+    for n in pc_group:
+        if note_cof_value[n] not in f_spans:
+            f_spans.append(note_cof_value[n])
+    _len = len(f_spans)
+    span_g = []
+    for i1 in range(_len):
+        f_spans[0] = f_spans[0] + 12
+        span = _np.max(f_spans) - _np.min(f_spans)
+        f_spans.sort()
+        span_g.append(span)
+    fifth_span = _np.min(span_g)
+    # print(f"fifth span:{fifth_span}")
+    # 小二度，大二度数量
+    semitone_num = 0
+    major2 = 0
+    if pc_group[-1] - pc_group[0] == 11:
+        semitone_num += 1
+    elif pc_group[-1] - pc_group[0] == 10:
+        major2 += 1
+    for ii in range(len(pc_group) - 1):
+        if pc_group[ii + 1] - pc_group[ii] == 1:
+            semitone_num += 1
+        if pc_group[ii + 1] - pc_group[ii] == 2:
+            major2 += 1
+    # print(f"semitone_num:{semitone_num}")
+    # print(f"major2:{major2}")
+    # 是否有大三小三和弦：
+    contain_M_m_3chord = contains_M_m_3chord(pc_group)
+    # 开始判断：
+    if 2 <= fifth_span <= 4:
+        if major2 <= 1:
+            if contain_M_m_3chord:
+                return 10
+            else:
+                return 9.67
+        elif 1 < major2 <= 3:
+            return 9.33
+    elif fifth_span == 5:
+        if major2 <= 1 and contain_M_m_3chord:
+            return 7
+        elif major2 == 2 and contain_M_m_3chord:
+            return 6.67
+        else:
+            return 6.33
+    elif fifth_span == 6:
+        if semitone_num == 0:
+            if major2 <= 1:
+                if contain_M_m_3chord:
+                    return 9
+                else:
+                    return 8.67
+            elif major2 == 3:
+                return 8.33
+        elif semitone_num == 1:
+            if major2 == 1 and contain_M_m_3chord:
+                return 6
+            elif major2 == 2 and contain_M_m_3chord:
+                return 5.67
+            else:
+                return 5.33
+        elif semitone_num == 2:
+            if major2 == 1 and contain_M_m_3chord:
+                return 4
+            else:
+                return 3.5
+    else:
+        if semitone_num == 0:
+            if fifth_span == 8 and major2 == 0:
+                return 8
+            elif fifth_span == 8 and major2 == 2:
+                return 7.67
+            else:
+                return 7.33
+        elif semitone_num == 1:
+            if major2 == 0 and contain_M_m_3chord:
+                return 5
+            elif major2 <= 2 and contain_M_m_3chord:
+                return 4.67
+            else:
+                return 4.33
+        elif semitone_num == 2:
+            if fifth_span != 7:
+                if major2 <= 2 and contain_M_m_3chord:
+                    return 3
+                elif major2 > 2 or not contain_M_m_3chord:
+                    return 2.75
+            else:
+                span_contains_7 = False
+                for i in range(len(f_spans)):
+                    for j in range(len(f_spans)):
+                        if i - j == 7:
+                            span_contains_7 = True
+                            break
+                    if span_contains_7:
+                        break
+                if not span_contains_7:
+                    if major2 <= 2 and contain_M_m_3chord:
+                        return 3
+                    elif major2 > 2 or not contain_M_m_3chord:
+                        return 2.75
+                # 复杂和弦
+                if major2 <= 3 and contain_M_m_3chord:
+                    return 2.5
+                elif major2 > 3 or not contain_M_m_3chord:
+                    return 2.25
+        else:
+            series2semitone = 0
+            series3semitone = 0
+            if pc_group[-1] - pc_group[0] == 11:
+                if pc_group[1] - pc_group[0] == 1 or pc_group[-1] - pc_group[-2] == 1:
+                    series2semitone += 1
+                    if pc_group[2] - pc_group[1] == pc_group[1] - pc_group[0] == 1 or \
+                            pc_group[-1] - pc_group[-2] == pc_group[-2] - pc_group[-3] == 1:
+                        series3semitone += 1
+            ii = 0
+            while ii < len(pc_group) - 2:
+                if pc_group[ii + 2] - pc_group[ii + 1] == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series2semitone += 2
+                    ii += 3
+                ii += 1
+            ii = 0
+            while ii < len(pc_group) - 3:
+                if pc_group[ii + 3] - pc_group[ii + 2] \
+                        == pc_group[ii + 2] - pc_group[ii + 1] \
+                        == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series3semitone += 1
+                    ii += 4
+                ii += 1
+            if semitone_num == 3:
+                if (not series2semitone) and (not series3semitone):
+                    return 2
+                elif series3semitone:
+                    return 1.33
+                elif series2semitone:
+                    return 1.67
+            elif semitone_num >= 4:
+                if series2semitone == 2:
+                    return 1
+                elif series3semitone:
+                    return 0.67
+                else:
+                    return 0.33
+    txt = f'Failed to get consonance of the given chord {chord}'
+    raise RuntimeError(txt)
+
+
+def get_chordConsonanceTian_from_chromaVector(cv: List[int]) -> float:
+    # 得到音级集合pc_group
+    pc_group = chromaVector2pcSet(cv)
+    # 得到五度圈跨度fifth_span
+    f_spans = []
+    for n in pc_group:
+        if note_cof_value[n] not in f_spans:
+            f_spans.append(note_cof_value[n])
+    _len = len(f_spans)
+    span_g = []
+    for i1 in range(_len):
+        f_spans[0] = f_spans[0] + 12
+        span = _np.max(f_spans) - _np.min(f_spans)
+        f_spans.sort()
+        span_g.append(span)
+    fifth_span = _np.min(span_g)
+    # print(f"fifth span:{fifth_span}")
+    # 小二度，大二度数量
+    semitone_num = 0
+    major2 = 0
+    if pc_group[-1] - pc_group[0] == 11:
+        semitone_num += 1
+    elif pc_group[-1] - pc_group[0] == 10:
+        major2 += 1
+    for ii in range(len(pc_group) - 1):
+        if pc_group[ii + 1] - pc_group[ii] == 1:
+            semitone_num += 1
+        if pc_group[ii + 1] - pc_group[ii] == 2:
+            major2 += 1
+    # print(f"semitone_num:{semitone_num}")
+    # print(f"major2:{major2}")
+    # 是否有大三小三和弦：
+    contain_M_m_3chord = contains_M_m_3chord(pc_group)
+    # 开始判断：
+    if 2 <= fifth_span <= 4:
+        if major2 <= 1:
+            if contain_M_m_3chord:
+                return 10
+            else:
+                return 9.67
+        elif 1 < major2 <= 3:
+            return 9.33
+    elif fifth_span == 5:
+        if major2 <= 1 and contain_M_m_3chord:
+            return 7
+        elif major2 == 2 and contain_M_m_3chord:
+            return 6.67
+        else:
+            return 6.33
+    elif fifth_span == 6:
+        if semitone_num == 0:
+            if major2 <= 1:
+                if contain_M_m_3chord:
+                    return 9
+                else:
+                    return 8.67
+            elif major2 == 3:
+                return 8.33
+        elif semitone_num == 1:
+            if major2 == 1 and contain_M_m_3chord:
+                return 6
+            elif major2 == 2 and contain_M_m_3chord:
+                return 5.67
+            else:
+                return 5.33
+        elif semitone_num == 2:
+            if major2 == 1 and contain_M_m_3chord:
+                return 4
+            else:
+                return 3.5
+    else:
+        if semitone_num == 0:
+            if fifth_span == 8 and major2 == 0:
+                return 8
+            elif fifth_span == 8 and major2 == 2:
+                return 7.67
+            else:
+                return 7.33
+        elif semitone_num == 1:
+            if major2 == 0 and contain_M_m_3chord:
+                return 5
+            elif major2 <= 2 and contain_M_m_3chord:
+                return 4.67
+            else:
+                return 4.33
+        elif semitone_num == 2:
+            if fifth_span != 7:
+                if major2 <= 2 and contain_M_m_3chord:
+                    return 3
+                elif major2 > 2 or not contain_M_m_3chord:
+                    return 2.75
+            else:
+                span_contains_7 = False
+                for i in range(len(f_spans)):
+                    for j in range(len(f_spans)):
+                        if i - j == 7:
+                            span_contains_7 = True
+                            break
+                    if span_contains_7:
+                        break
+                if not span_contains_7:
+                    if major2 <= 2 and contain_M_m_3chord:
+                        return 3
+                    elif major2 > 2 or not contain_M_m_3chord:
+                        return 2.75
+                # 复杂和弦
+                if major2 <= 3 and contain_M_m_3chord:
+                    return 2.5
+                elif major2 > 3 or not contain_M_m_3chord:
+                    return 2.25
+        else:
+            series2semitone = 0
+            series3semitone = 0
+            if pc_group[-1] - pc_group[0] == 11:
+                if pc_group[1] - pc_group[0] == 1 or pc_group[-1] - pc_group[-2] == 1:
+                    series2semitone += 1
+                    if pc_group[2] - pc_group[1] == pc_group[1] - pc_group[0] == 1 or \
+                            pc_group[-1] - pc_group[-2] == pc_group[-2] - pc_group[-3] == 1:
+                        series3semitone += 1
+            ii = 0
+            while ii < len(pc_group) - 2:
+                if pc_group[ii + 2] - pc_group[ii + 1] == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series2semitone += 2
+                    ii += 3
+                ii += 1
+            ii = 0
+            while ii < len(pc_group) - 3:
+                if pc_group[ii + 3] - pc_group[ii + 2] \
+                        == pc_group[ii + 2] - pc_group[ii + 1] \
+                        == pc_group[ii + 1] - pc_group[ii] == 1:
+                    series3semitone += 1
+                    ii += 4
+                ii += 1
+            if semitone_num == 3:
+                if (not series2semitone) and (not series3semitone):
+                    return 2
+                elif series3semitone:
+                    return 1.33
+                elif series2semitone:
+                    return 1.67
+            elif semitone_num >= 4:
+                if series2semitone == 2:
+                    return 1
+                elif series3semitone:
+                    return 0.67
+                else:
+                    return 0.33
+    txt = f'Failed to get consonance of the given chroma vector {cv}'
+    raise RuntimeError(txt)
+
+
+def chord_colour_hua(chord: List[int]) -> float:
+    _chord_colour_hua = []
+    for note in chord:
+        if (value := math.degrees(note_cof_angle[note % 12])) not in _chord_colour_hua:
+            _chord_colour_hua.append(value)
+    return round(float(_np.mean(_chord_colour_hua)), 1)
+
+
+def chord_colour_hua_from_chromaVector(cv):
+    _chord_colour_hua = []
+    for pitchClass in chromaVector2pcSet(cv):
+        if (value := math.degrees(note_cof_angle[pitchClass])) not in _chord_colour_hua:
+            _chord_colour_hua.append(value)
+    return round(float(_np.mean(_chord_colour_hua)), 1)
+
+
+def chord_colour(chord: List[int], dynamics: List[int]) -> float:
+    """
+    :param chord: Chord's note group
+    :param dynamics: Dynamics (0-1)
+    :return:
+    """
+    _chord_colour_hua = [math.degrees(note_cof_angle[chord[i] % 12] * dynamics[i]) for i in range(len(chord))]
+    return float(_np.mean(_chord_colour_hua))
+
+
+def chord_functionality(tonality, chord: List[int]):
+    cof_relation = _np.zeros(len(chord))
+    for i in len(chord):
+        cof_relation[i] = note_cof_value[(chord[i] - tonality) % 12]
+    return
+
+
+def conform_voice_leading(chord, last_chord):
+    """
+
+    :param chord:
+    :param last_chord:
+    :return: bool
+    """
+    chord = sorted(chord)
+    if len(chord) < 3 or len(last_chord) < 3:
+        raise ValueError("There should be more than 2 notes in a chord, especially when judging voice leading.")
+
+    if len(chord) == len(last_chord):
+        # 判断所有声部是否同向：
+        # 定义计数器
+        cou = 0
+        for i in range(len(last_chord)):
+            if last_chord[i] > chord[i]:
+                cou += 1
+            if last_chord[i] < chord[i]:
+                cou -= 1
+        if abs(cou) == len(chord):
+            print(f"{last_chord}->{chord}: ")
+            print("All voices" + "\033[0;31m same direction\033[0m" +
+                  ".")
+            return False
+    elif len(chord) > len(last_chord):  # 声部扩张
+        # 判断声部是否同向：
+        cou_up = 0
+        cou_dn = 0
+        for i in range(-1, -len(last_chord) - 1, -1):
+            if chord[i] < last_chord[i]:
+                cou_dn += 1
+        for i in range(len(last_chord)):
+            if chord[i] > last_chord[i]:
+                cou_up += 1
+        if cou_up == len(last_chord) or cou_dn == len(last_chord):
+            return False
+    else:  # 声部减少
+        # 判断声部是否同向：
+        cou_up = 0
+        cou_dn = 0
+        for i in range(-1, -len(chord) - 1, -1):
+            if chord[i] > last_chord[i]:
+                cou_up += 1
+        for i in range(len(chord)):
+            if chord[i] < last_chord[i]:
+                cou_dn += 1
+        if cou_up == len(chord) or cou_dn == len(chord):
+            return False
+    return True

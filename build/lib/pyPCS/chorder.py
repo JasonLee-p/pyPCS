@@ -95,7 +95,7 @@ def semitone_num(c_itv):
 
 
 # 色值计算需要五度圈关系
-def c_k_colour(interval):
+def chord_colour_k(interval):
     spans = []
     for n in interval:
         spans.append(note_cof_value[n])
@@ -211,9 +211,9 @@ def root_note_PH(note_g):
             for _pitch in pc_itv_dict[_interval]:
                 possible_root.append(_pitch)
         if len(pc_itv_dict[0]) > 2:
-            possible_root.append(_interval[0])
+            possible_root.append(note_g[0])
         if possible_root:
-            print("Possible roots:" + str(pc_itv_dict))
+            # print("Possible roots:" + str(pc_itv_dict))
             return min(possible_root)
         return pc_itv_dict
 

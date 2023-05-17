@@ -32,13 +32,21 @@ pyPCS旨在创建 一个用于乐理研究人士的趁手的分析工具 和 一
 
 ### 二.安装
 
-该模块依赖numpy模块，pygame模块与播放midi有关的部分。
-
-pyPCS最新的版本（v0.0.1 但仍未完成）已经上传到了PyPI，可以直接使用pip安装：
+pyPCS最新的版本（v0.0.4）已经上传到了PyPI，可以直接使用pip安装：
 
 ```sh
 python3 -m pip install pyPCS
 ```
+目前安装完之后还暂时还不能直接使用，
+
+需要用户找到环境目录的该目录下，然后把这两个文件下载到这个目录：
+
+"(environment)/Lib/site-packages/pyPCS/"
+
+[ChordAttr.json](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/ChordAttr.json)
+
+[circle_of_fifth.png](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/circle_of_fifth.png)
+
 
 ### 三.使用
 

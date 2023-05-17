@@ -1,7 +1,7 @@
 import setuptools
 
 
-VERSION = 1
+VERSION = 4
 
 
 setuptools.setup(
@@ -12,15 +12,18 @@ setuptools.setup(
     description="",
     long_description=open('README.md', 'r', encoding="utf-8").read(),
     long_description_content_type='text/markdown',
+    install_package_data=True,
     url="https://github.com/JasonLee-p/pyPCS",
     install_requires=[
         'numpy==1.24.2',
         'pygame==2.3.0',
-        'rtmidi'
+        'rtmidi==2.5.0',
+        'webcolors==1.12',
+        'Pillow==9.5.0'
     ],
     packages=setuptools.find_packages(),
     classifiers=[
-        "Programming Language :: Python :: 3.8.0",
+        "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
         "Operating System :: OS Independent",
     ],

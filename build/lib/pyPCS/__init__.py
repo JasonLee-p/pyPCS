@@ -1,5 +1,5 @@
 """
-pypcs
+pyPCS
 =====
 (unfinished)
 
@@ -17,7 +17,7 @@ How to use the documentation
 Documentation is available in two forms: docstrings provided
 with the code, and a loose standing reference guide, available from
 `github <https://github.com/JasonLee-p/pyPCS>`_.
-(might be uncompleted somewhere as it'pypcs unfinished)
+(might be uncompleted somewhere as it is unfinished)
 
 To import `pyPCS`::
 
@@ -25,8 +25,8 @@ To import `pyPCS`::
 
 Code snippets are indicated by three greater-than signs::
 
-  >>> x = 42
-  >>> x = x + 1
+  >>> x = 69
+  >>> x = x % 12
 
 Use the built-in ``help`` function to view a function'pypcs docstring::
 
@@ -90,9 +90,9 @@ __all__ = [
     "play_note", "play_chord", "play_chord_set", "play_pitch_segment",  # _player
     "root_note_PH", "mod12"  # chorder
 ]
-from .series.series1d import PitchSeries, Rhyme, Chord, PitchClassSeries
-from .series.series2d import PitchSegment, PitchClassSegment, ContourSegment
-from .basicGenerator import get_segments_subsegment, counterpoint, random_relative_pitch_set, \
+from .series.series1d import PitchSeries, Rhythm, Chord, PitchClassSeries
+from .series.series2d import PitchSegment, ContourSegment
+from .basicGenerator import get_segments_subsegment, counterpoint, \
     randomChord, randomSegment, randomRhythm
 from .piecesGenerator import *
 

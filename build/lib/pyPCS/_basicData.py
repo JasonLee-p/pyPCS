@@ -2,23 +2,23 @@
 This module defines some decorators,
 and stores the map between notes and value, chord name and chroma vectors, and so on.
 """
+import math
 
 
 # 打印函数运行的时间
 def _prt_func_time(func):
-
     def f(*args, **kwargs):
         from time import time
         st = time()
         _return = func(*args, **kwargs)
-        print("Time: \033[0;33m" + str(time()-st) + "pypcs\033[0m")
+        print("Time: \033[0;33m" + str(time() - st) + "pypcs\033[0m")
         return _return
+
     return f
 
 
 # 打印函数每运行一定次数的时间
 def _prt_funcs_time(times):
-
     def __prt_funcs_time(func):
         st = 0
         counter = 0
@@ -29,10 +29,12 @@ def _prt_funcs_time(times):
             st = time() if counter == 0 else st
             counter += 1
             if counter == times:
-                print(time()-st)
+                print(time() - st)
                 counter = 0
             return func(*args, **kwargs)
+
         return f
+
     return __prt_funcs_time
 
 
@@ -45,6 +47,7 @@ def _prt_func_run_num(func):
         counter += 1
         print(counter)
         return func(*args, **kwargs)
+
     return f
 
 
@@ -118,6 +121,12 @@ notes_names = [
     'C', '#C', 'D', '#D', 'E', 'F', '#F', 'G', '#G', 'A', '#A', 'B',
     'c', '#c', 'd', '#d', 'e', 'f', '#f', 'g', '#g', 'a', '#a', 'b'
 ]
+
+
+ChordsAttributes = {
+
+}
+
 
 chords_chroma_vector = {
     #
@@ -387,7 +396,7 @@ chords_chroma_vector = {
     'B7sus4': [0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1],
     #
     #                                               省略音九和弦：
-    # 大九和弦省略七音（或加九音）
+    # 大九和弦省略七音（或三和弦add9）
     'Cadd9': [1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0],  # 7 + 12*19
     '#Cadd9': [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0],
     'Dadd9': [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0],
@@ -432,5 +441,27 @@ chords_chroma_vector = {
 # The circle of fifth value of a pitch-class.
 # 五度圈音级集和：
 note_cof_value = {0: 0, 1: -5, 2: 2, 3: -3, 4: 4, 5: -1, 6: 6, 7: 1, 8: -4, 9: 3, 10: -2, 11: 5}
+# 五度圈角度映射：
+note_cof_angle = {
+    0: math.pi * 7 / 12, 1: math.pi * 17 / 12, 2: math.pi / 4, 3: math.pi * 13 / 12, 4: -math.pi / 12, 5: math.pi * 3 / 4,
+    6: -math.pi*5/12, 7: math.pi * 5/12, 8: math.pi*5/4, 9: math.pi/12, 10: math.pi*11/12, 11: -math.pi*1/4}
 # 紧张度计算的音程预设值
 note_tension = {0: 0, 1: 32, 2: 8, 3: 4, 4: 2, 5: 1, 6: 16, 7: 1, 8: 2, 9: 4, 10: 8, 11: 32}
+# 泛音强度
+overtone_strength = {12: 0.85, 19: 0.825, 24: 0.8, 28: 0.75, 31: 0.7, 34: 0.6, 36: 0.6, 38: 0.5}
+# 音程和不协和度之间的关系
+interval_dissonance_t1 = {
+    0: 0,
+    1: 5.5, 2: 3.3, 3: 2, 4: 2.3, 5: 1.5, 6: 3, 7: 0.5, 8: 2.8, 9: 1, 10: 1.8, 11: 2.9, 12: 0,
+    13: 2.2, 14: 1.5, 15: 1, 16: 1.2, 17: 0.7, 18: 2, 19: 0, 20: 1.4, 21: 0.5, 22: 0.9, 23: 1.4, 24: 0,
+    25: 1, 26: 0, 27: 0.4, 28: 0, 29: 0.3, 30: 1, 31: 0, 32: 0.6, 33: 0.2, 34: 0.1, 35: 0.6, 36: 0,
+    37: 0.5, 38: 0, 39: 0.2, 40: 0, 41: 0.15, 42: 0.5, 43: 0, 44: 0.3, 45: 0.1, 46: 0, 47: 0.3, 48: 0
+}
+
+interval_dissonance_t2 = {
+    0: 0,
+    1: 5.5, 2: 3.3, 3: 2, 4: 2.3, 5: 1.5, 6: 3, 7: 0.5, 8: 2.8, 9: 1, 10: 1.8, 11: 2.9, 12: 0,
+    13: 3.2, 14: 2.1, 15: 1.3, 16: 1.4, 17: 1, 18: 2, 19: 0, 20: 1.8, 21: 0.7, 22: 1.2, 23: 2, 24: 0,
+    25: 1.6, 26: 1, 27: 0.6, 28: 0, 29: 0.7, 30: 1, 31: 0, 32: 0.9, 33: 0.35, 34: 0, 35: 1, 36: 0,
+    37: 0.5, 38: 0, 39: 0.2, 40: 0, 41: 0.15, 42: 0.5, 43: 0, 44: 0.3, 45: 0.1, 46: 0, 47: 0.3, 48: 0
+}
