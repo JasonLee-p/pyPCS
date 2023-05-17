@@ -221,5 +221,8 @@ class TestChord(unittest.TestCase):
         self.assertEqual(TestChord.Cm67b9.colour_tian, (2.75, 135.0))
 
     def test_show_cof(self):
-        Chord([61, 62, 63]).show_circle_of_fifth()
-        Chord.show_circle_of_fifths(TestChord.C, TestChord.C7)
+        Chord([60, 64, 67, 71]).show_circle_of_fifth()
+        Chord.show_circle_of_fifths(TestChord.Csus4M7, TestChord.CM7)
+
+    def test_cof_value(self):
+        print(Chord.get_colourTian_from_chromaVector([1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1]))

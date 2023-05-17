@@ -315,14 +315,19 @@ class Rhythm:
 
 
 class Chord:
+    """
+    Class Chord
+    ===========
+
+    """
     from PIL import Image
     all_chords = []
-    abs_dir = os.path.dirname(__file__)
-    pc2position = {
+    _abs_dir = os.path.dirname(__file__)
+    _pc2position = {
         0: (250, 109), 7: (321, 128), 2: (372, 179), 9: (391, 250), 4: (372, 321), 11: (321, 372),
         6: (250, 391), 1: (179, 372), 8: (128, 321), 3: (109, 250), 10: (128, 179), 5: (179, 128)
     }
-    _im = Image.open(os.path.join(os.path.dirname(abs_dir), 'circle_of_fifth.png'))
+    _im = Image.open(os.path.join(os.path.dirname(_abs_dir), 'circle_of_fifth.png'))
 
     @staticmethod
     def get_colourTian_from_chromaVector(cv):
@@ -331,8 +336,8 @@ class Chord:
 
     @staticmethod
     def get_colourTian_from_chordName(chord_name):
-        abs_dir = os.path.dirname(__file__)
-        with open(os.path.join(os.path.dirname(abs_dir), 'ChordAttr.json'), 'r') as f:  # TODO: 相对路径
+        _abs_dir = os.path.dirname(__file__)
+        with open(os.path.join(os.path.dirname(_abs_dir), 'ChordAttr.json'), 'r') as f:  # TODO: 相对路径
             f = f.read()
             chordsAttr = json.loads(f)
         return chordsAttr[chord_name][1]
@@ -354,22 +359,22 @@ class Chord:
             for i in range(12):
                 if i in chord.pitch_class_group:
                     canvas.create_oval(
-                        Chord.pc2position[i][0]-9, Chord.pc2position[i][1]-9,
-                        Chord.pc2position[i][0]+9, Chord.pc2position[i][1]+9,
+                        Chord._pc2position[i][0] - 9, Chord._pc2position[i][1] - 9,
+                        Chord._pc2position[i][0] + 9, Chord._pc2position[i][1] + 9,
                         fill='firebrick', outline='firebrick')
                 else:
                     canvas.create_oval(
-                        Chord.pc2position[i][0] - 5, Chord.pc2position[i][1] - 5,
-                        Chord.pc2position[i][0] + 5, Chord.pc2position[i][1] + 5,
+                        Chord._pc2position[i][0] - 5, Chord._pc2position[i][1] - 5,
+                        Chord._pc2position[i][0] + 5, Chord._pc2position[i][1] + 5,
                         fill='black', outline='black')
-            # last_pc = pc2position[self.pitch_class_group[0]]
+            # last_pc = _pc2position[self.pitch_class_group[0]]
             # for pc in self.pitch_class_group[1:]:
             #     canvas.create_line(
-            #         last_pc[0], last_pc[1], pc2position[pc][0], pc2position[pc][0], fill='firebrick', width=6)
-            #     last_pc = pc2position[pc]
+            #         last_pc[0], last_pc[1], _pc2position[pc][0], _pc2position[pc][0], fill='firebrick', width=6)
+            #     last_pc = _pc2position[pc]
             # canvas.create_line(
             #     last_pc[0], last_pc[1],
-            #     pc2position[self.pitch_class_group[0]][0], pc2position[self.pitch_class_group[0]][0],
+            #     _pc2position[self.pitch_class_group[0]][0], _pc2position[self.pitch_class_group[0]][0],
             #     fill='firebrick', width=6)
             canvas.pack(expand=True, side='left')
         root.mainloop()
@@ -418,22 +423,22 @@ class Chord:
         for i in range(12):
             if i in self.pitch_class_group:
                 canvas.create_oval(
-                    Chord.pc2position[i][0]-9, Chord.pc2position[i][1]-9,
-                    Chord.pc2position[i][0]+9, Chord.pc2position[i][1]+9,
+                    Chord._pc2position[i][0] - 9, Chord._pc2position[i][1] - 9,
+                    Chord._pc2position[i][0] + 9, Chord._pc2position[i][1] + 9,
                     fill='firebrick', outline='firebrick')
             else:
                 canvas.create_oval(
-                    Chord.pc2position[i][0] - 5, Chord.pc2position[i][1] - 5,
-                    Chord.pc2position[i][0] + 5, Chord.pc2position[i][1] + 5,
+                    Chord._pc2position[i][0] - 5, Chord._pc2position[i][1] - 5,
+                    Chord._pc2position[i][0] + 5, Chord._pc2position[i][1] + 5,
                     fill='black', outline='black')
-        # last_pc = pc2position[self.pitch_class_group[0]]
+        # last_pc = _pc2position[self.pitch_class_group[0]]
         # for pc in self.pitch_class_group[1:]:
         #     canvas.create_line(
-        #         last_pc[0], last_pc[1], pc2position[pc][0], pc2position[pc][0], fill='firebrick', width=6)
-        #     last_pc = pc2position[pc]
+        #         last_pc[0], last_pc[1], _pc2position[pc][0], _pc2position[pc][0], fill='firebrick', width=6)
+        #     last_pc = _pc2position[pc]
         # canvas.create_line(
         #     last_pc[0], last_pc[1],
-        #     pc2position[self.pitch_class_group[0]][0], pc2position[self.pitch_class_group[0]][0],
+        #     _pc2position[self.pitch_class_group[0]][0], _pc2position[self.pitch_class_group[0]][0],
         #     fill='firebrick', width=6)
         canvas.pack(expand=True)
         root.mainloop()

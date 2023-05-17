@@ -44,7 +44,7 @@ python3 -m pip install pyPCS
 
 用pip安装完之后，可以用import直接导入模块
 
-```sh
+```python
 import pyPCS
 ```
 #### 目录
