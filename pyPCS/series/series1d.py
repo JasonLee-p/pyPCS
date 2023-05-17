@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os.path
 from typing import List, Union
 import numpy as _np
@@ -322,7 +323,6 @@ class Chord:
 
     @staticmethod
     def get_colourTian_from_chordName(chord_name):
-        import json
         abs_dir = os.path.dirname(__file__)
         with open(os.path.join(os.path.dirname(abs_dir), 'ChordAttr.json'), 'r') as f:  # TODO: 相对路径
             f = f.read()
@@ -356,6 +356,19 @@ class Chord:
 
     def get_pc_group(self):
         return PitchClassSeries(self.pitch_class_group)[:], self, "Pitch set group"
+
+    def show_circle_of_fifth(self):
+        from threading import Thread
+
+        def window():
+            import tkinter as tk
+            root = tk.Tk()
+            root.configure(bg='Beige', height=400, width=400)
+            canvas = tk.Canvas(root, bg='Beige', height=350, width=400)
+            canvas.pack(expand=True)
+            root.mainloop()
+
+        Thread(target=window).start()
 
     def play(self, player):
         play_chord(player, self.pitch_group)

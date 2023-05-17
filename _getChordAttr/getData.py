@@ -304,5 +304,3 @@ if __name__ == "__main__":
     with open('ChordAttr.json', 'wb') as wf:
         wf.write(json.dumps(ChordAttrs,
                             indent=2, ensure_ascii=False, cls=MyEncoder).encode('utf-8'))
-
-    print(Chord.get_colourTian_from_chordName('C'))
