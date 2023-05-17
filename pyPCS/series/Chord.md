@@ -5,7 +5,7 @@ from pyPCS import Chord
 C_1 = Chord([60, 64, 67])
 C_2 = Chord([48, 55, 67])
 Cadd9 = Chord([48, 55, 60, 62, 64, 67])
-print(Chord.all_chords)
+print(Chord.all_chords)  # 返回Chord的所有实例
 ```
 ## 实例方法
 ### 初始化的属性：
@@ -58,6 +58,8 @@ print(Chord.all_chords)
 ```
 >>> (7, 30.0)
 ```
+###### 华氏协和度：参见华萃康《色彩和声》第352页“谱例7-4 和弦紧张度等级划分细则”
+###### 部分参数详解参见其文章：<https://zhuanlan.zhihu.com/p/580555176>
 ### 实例的其他方法：
 
 get_pc_group()：返回一个新的PitchClassSeries对象

@@ -50,59 +50,12 @@ import pyPCS
 #### 目录
 
 ##### 一维数据结构:
-  - [1.Chord](#1.Chord) 和弦
+  - [1.Chord](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/series/Chord.md) 和弦
   - [2.PitchSeries](#2.PitchSeries)音高序列
   - [3.Rhythm](#3.Rhythm) 时值序列
   - [4.PitchClassSeries](#4.PitchClassSeries) 音级序列
 ##### 二维数据结构：
   - [5.PitchSegment](#5.PitchSegment) 截段
-
-
-### 1.Chord
-   * ### 属性
-    pitch_group：返回音符列表
-    
-    pitch_class_group：返回音级集列表
-    
-    length：音符数量
-    
-    type：和弦种类，例如 60,64,67,70 ——> "C7"
-    
-    cof_span：五度圈跨度
-    
-    semitone_num：所含小二度数量
-    
-    root_note：欣德米特根音判别法
-    
-    colour_k：色度（忘记了是谁的标准，暂且不要用）
-    
-    colour_hua：色彩度（角度）
-    
-    consonance_tian：华氏协和度
-    
-    dissonance：本人自定义的不协和度算法，有待完善，不建议使用，但可以试试效果。
-    
-    colour_tian：博主 色彩和声-小田田 定义的色度向量
-
-###### 华氏协和度：参见华萃康《色彩和声》第352页“谱例7-4 和弦紧张度等级划分细则”
-###### 部分参数详解参见其文章：<https://zhuanlan.zhihu.com/p/580555176>
-
-   * #### 方法
-    
-    get_pc_segment()：将音集转化为音级集，返回新的PitchClassSeries对象
-    
-    play():利用pygame播放该对象。强烈建议在全局用pygame.midi.Output()方法设置输出端口并传入。
-
-   * #### 魔术方法
-    
-    作为迭代器使用：返回和弦音符。
-    
-    减法运算符：只能对两个Chord实例使用，返回两个和弦的平均音高的差
-    
-    大于号小于号：对两个Chord对象的平均音高进行比较
-    
-    len()：获取音符数量。
-
 
 ### 2.PitchSeries
   ###### Pitch series 意为音高序列，即一组有序的音高
@@ -309,62 +262,15 @@ After installation, you can simply use the module by
 ```python
 import pyPCS
 ```
-#### 目录
+#### Table of Contents
 
-##### 一维数据结构:
-  - [1.Chord](#1.Chord) 和弦
-  - [2.PitchSeries](#2.PitchSeries)音高序列
-  - [3.Rhythm](#3.Rhythm) 时值序列
-  - [4.PitchClassSeries](#4.PitchClassSeries) 音级序列
-##### 二维数据结构：
-  - [5.PitchSegment](#5.PitchSegment) 截段
-
-
-### 1.Chord
-   * #### 属性
-    pitch_group：返回音符列表
-    
-    pitch_class_group：返回音级集列表
-    
-    length：音符数量
-    
-    type：和弦种类，例如 60,64,67,70 ——> "C7"
-    
-    cof_span：五度圈跨度
-    
-    semitone_num：所含小二度数量
-    
-    root_note：欣德米特根音判别法
-    
-    colour_k：色度（忘记了是谁的标准，暂且不要用）
-    
-    colour_hua：色彩度（角度）
-    
-    consonance_tian：华氏协和度
-    
-    dissonance：本人自定义的不协和度算法，有待完善，不建议使用，但可以试试效果。
-    
-    colour_tian：博主 色彩和声-小田田 定义的色度向量
-
-###### 华氏协和度：参见华萃康《色彩和声》第352页“谱例7-4 和弦紧张度等级划分细则”
-###### 部分参数详解参见其文章：<https://zhuanlan.zhihu.com/p/580555176>
-
-   * #### 方法
-    
-    get_pc_segment()：将音集转化为音级集，返回新的PitchClassSeries对象
-    
-    play():利用pygame播放该对象。强烈建议在全局用pygame.midi.Output()方法设置输出端口并传入。
-
-   * #### 魔术方法
-    
-    作为迭代器使用：返回和弦音符。
-    
-    减法运算符：只能对两个Chord实例使用，返回两个和弦的平均音高的差
-    
-    大于号小于号：对两个Chord对象的平均音高进行比较
-    
-    len()：获取音符数量。
-
+##### 1d array:
+  - [1.Chord](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/series/Chord.md)
+  - [2.PitchSeries](#2.PitchSeries)
+  - [3.Rhythm](#3.Rhythm) duration(beat) set
+  - [4.PitchClassSeries](#4.PitchClassSeries)
+##### 2d array：
+  - [5.PitchSegment](#5.PitchSegment)
 
 ### 2.PitchSeries
   ###### Pitch series 意为音高序列，即一组有序的音高
