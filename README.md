@@ -39,7 +39,7 @@ python3 -m pip install pyPCS
 ```
 目前安装完之后还暂时还不能直接使用，
 
-需要用户找到环境目录的该目录下，然后把这两个文件下载到这个目录：
+需要把下面这两个文件下载到环境目录（如下）：
 
 "(environment)/Lib/site-packages/pyPCS/"
 
