@@ -48,7 +48,7 @@ import pyPCS
 #### 目录
 
 ##### 一维数据结构:
-  - [1.Chord](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/series/Chord.md) 和弦
+  - [1.Chord](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/series/Chord.md) 和弦（点开链接查看详细用法介绍）
   - [2.PitchSeries](#2.PitchSeries)音高序列
   - [3.Rhythm](#3.Rhythm) 时值序列
   - [4.PitchClassSeries](#4.PitchClassSeries) 音级序列
