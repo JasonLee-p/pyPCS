@@ -1,7 +1,7 @@
 import setuptools
 
 
-VERSION = 4
+VERSION = 5
 
 
 setuptools.setup(
@@ -13,6 +13,7 @@ setuptools.setup(
     long_description=open('README.md', 'r', encoding="utf-8").read(),
     long_description_content_type='text/markdown',
     install_package_data=True,
+    package_data={'': ['*.txt', '*.md', '*.json', '*.png']},
     url="https://github.com/JasonLee-p/pyPCS",
     install_requires=[
         'numpy==1.24.2',

@@ -32,21 +32,11 @@ pyPCS旨在创建 一个用于乐理研究人士的趁手的分析工具 和 一
 
 ### 二.安装
 
-pyPCS最新的版本（v0.0.4）已经上传到了PyPI，可以直接使用pip安装：
+pyPCS最新的版本（v0.0.5）已经上传到了PyPI，可以直接使用pip安装：
 
 ```sh
 python3 -m pip install pyPCS
 ```
-目前安装完之后还暂时还不能直接使用，
-
-需要把下面这两个文件下载到环境目录（如下）：
-
-"(environment)/Lib/site-packages/pyPCS/"
-
-[ChordAttr.json](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/ChordAttr.json)
-
-[circle_of_fifth.png](https://github.com/JasonLee-p/pyPCS/blob/master/pyPCS/circle_of_fifth.png)
-
 
 ### 三.使用
 

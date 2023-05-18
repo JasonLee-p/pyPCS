@@ -14,6 +14,7 @@ pyPCS/basicGenerator/__init__.py
 pyPCS/basicGenerator/basicGenerator.py
 pyPCS/piecesGenerator/__init__.py
 pyPCS/piecesGenerator/pieces_generator.py
+pyPCS/series/Chord.md
 pyPCS/series/__init__.py
 pyPCS/series/funcs.py
 pyPCS/series/series1d.py
