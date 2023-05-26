@@ -443,8 +443,14 @@ class Chord:
         canvas.pack(expand=True)
         root.mainloop()
 
-    def play(self, player):
-        play_chord(player, self.pitch_group)
+    def play(self, player, duration):
+        """
+
+        :param player: pygame.midi.Output(int)
+        :param duration: beats
+        :return: None
+        """
+        play_chord(player, self.pitch_group, duration=duration)
 
     def __len__(self):
         return len(self.pitch_group)

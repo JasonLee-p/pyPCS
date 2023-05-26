@@ -1,7 +1,7 @@
 # pyPCS —— A professional music analyzer (unfinished)
 ### pyPCS —— 旨在建立一个专业的音乐分析工具（未完成）
 
-[![Release](https://img.shields.io/badge/Release-ver0.0.1-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
+[![Release](https://img.shields.io/badge/Release-ver0.0.5-brightgreen.svg?style=flat-square)](https://pypi.org/project/pypcs/)
 
 
 #### 目前的状态：
