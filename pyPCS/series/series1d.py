@@ -101,11 +101,11 @@ class PitchSeries:
         """
         new_series = list(reversed(self.series))
         if add_pitch == 0:
-            return s2.PitchSegment(new_series,
-                                   new_tree=False, parent=self, name="Retrograde")
+            return PitchSeries(new_series,
+                               new_tree=False, parent=self, name="Retrograde")
         new_series = [new_pitch + int(add_pitch) for new_pitch in new_series]
-        return s2.PitchSegment(new_series,
-                               new_tree=False, parent=self, name=f"Retrograde{add_pitch}")
+        return PitchSeries(new_series,
+                           new_tree=False, parent=self, name=f"Retrograde{add_pitch}")
 
     def Inversion(self, axes: int) -> PitchSeries:
         """
@@ -115,8 +115,7 @@ class PitchSeries:
         :return: Inverted new PitchSeries obj.
         """
         new_series = [2 * axes - pitch for pitch in self.series]
-        return PitchSeries(new_series,
-                           new_tree=False, parent=self, name=f"Inversion{axes}")
+        return PitchSeries(new_series, new_tree=False, parent=self, name=f"Inversion{axes}")
 
     def RetrogradeInversion(self, axes: int) -> PitchSeries:
         """
@@ -126,8 +125,7 @@ class PitchSeries:
         :return: Retrograde new PitchSeries obj.
         """
         new_series = list(reversed([2 * axes - pitch for pitch in self.series]))
-        return PitchSeries(new_series,
-                           new_tree=False, parent=self, name=f"RetrogradeInversion{axes}")
+        return PitchSeries(new_series, new_tree=False, parent=self, name=f"RetrogradeInversion{axes}")
 
     def Rotation(self, num: int, add_pitch: int = 0) -> PitchSeries:
         """
@@ -141,11 +139,9 @@ class PitchSeries:
             raise ValueError("The attribute 'num' should be smaller than length of the series.")
         new_series = [self.series[(ii + num) % self.length] for ii in range(self.length)]
         if add_pitch == 0:
-            return PitchSeries(new_series[:],
-                               new_tree=False, parent=self, name=f"Rotation{num}")
+            return PitchSeries(new_series[:], new_tree=False, parent=self, name=f"Rotation{num}")
         new_series = [new_pitch + int(add_pitch) for new_pitch in new_series]
-        return PitchSeries(new_series[:],
-                           new_tree=False, parent=self, name=f"Rotation{num},T{add_pitch}")
+        return PitchSeries(new_series[:], new_tree=False, parent=self, name=f"Rotation{num},T{add_pitch}")
 
     def play(self, pg_player=None, bpm=80, instrument='piano'):
         """
@@ -264,8 +260,7 @@ class Rhythm:
         if not 0 <= num < self.length:
             raise ValueError("The attribute 'num' should be smaller than length of the series.")
         new_duration_set = [self.rhythm[(ii + num) % self.length] for ii in range(self.length)]
-        return s2.PitchSegment(new_duration_set[:],
-                               new_tree=False, parent=self, name=f"Rotation{num}")
+        return Rhythm(new_duration_set[:], new_tree=False, parent=self, name=f"Rotation{num}")
 
     def play(self, pg_player=None, bpm=80, instrument='piano'):
         """
