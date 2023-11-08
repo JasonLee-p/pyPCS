@@ -2,6 +2,9 @@
     This module defines how to play various music elements (in midi file).
 """
 from __future__ import annotations
+
+from typing import Literal
+
 import pygame.midi as pm
 import pygame.time
 
@@ -55,7 +58,7 @@ def play_pitch_segment(_player, pitch_segment, bpm=80, instrument='Piano'):
     print("Done")
 
 
-def play_chord(_player_, note_list, duration=4, bpm=80):
+def play_chord(_player_, note_list, duration=4, bpm=80, velocity=60):
     _player = 0
     if _player_ is None:
         _player = pm.Output(0)
@@ -63,16 +66,16 @@ def play_chord(_player_, note_list, duration=4, bpm=80):
     else:
         _player = _player_
     for note in note_list:
-        _player.note_on(note, 80)
-    pygame.time.wait(60000 * eval(str(duration)) // bpm)
+        _player.note_on(note, velocity - 2 * note_list.index(note))
+    pygame.time.wait(int(60000 * eval(str(duration)) // bpm))
     for note in note_list:
-        _player.note_off(note, 80)
+        _player.note_off(note, velocity - 2 * note_list.index(note))
 
     if _player_ is None:
         del _player
 
 
-def play_chord_set(_player_, chord_set, duration_set, bpm, instrument):
+def play_chord_set(_player_, chord_set, duration_set, bpm, instrument: Literal['Piano', 'Strings']):
     """
 
     :param _player_: Pygame.midi.Output(int) variable.
@@ -92,7 +95,7 @@ def play_chord_set(_player_, chord_set, duration_set, bpm, instrument):
     if instrument == 'Strings':
         _player.set_instrument(44)
     for i in range(len(chord_set)):
-        note_list = chord_set[i].pitch_group()
+        note_list = chord_set[i].pitch_group
         duration = duration_set[i]
         play_chord(_player, note_list, duration, bpm)
     if _player_ is None:

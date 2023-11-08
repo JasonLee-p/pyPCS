@@ -39,7 +39,7 @@ class PitchSeries:
             rotation:
         """
 
-    def __init__(self, series: List[int], new_tree=True, name=False, parent=None, __style=None):
+    def __init__(self, series: List[int], new_tree=True, name: Union[str, bool] = False, parent=None, __style=None):
         """
         The first element of variable 'pitch_class_series' is a pitch list while the second element is a duration list.
         You are not supposed to use attributes start with "__" !
@@ -99,7 +99,7 @@ class PitchSeries:
         :param add_pitch: Transposition num.
         :return: Retrograded new PitchSeries obj.
         """
-        new_series = reversed(self.series)
+        new_series = list(reversed(self.series))
         if add_pitch == 0:
             return s2.PitchSegment(new_series,
                                    new_tree=False, parent=self, name="Retrograde")
@@ -125,7 +125,7 @@ class PitchSeries:
         :param axes: An int to invert each pitch in the set.
         :return: Retrograde new PitchSeries obj.
         """
-        new_series = reversed([2 * axes - pitch for pitch in self.series])
+        new_series = list(reversed([2 * axes - pitch for pitch in self.series]))
         return PitchSeries(new_series,
                            new_tree=False, parent=self, name=f"RetrogradeInversion{axes}")
 
@@ -164,7 +164,7 @@ class PitchSeries:
         return hash(self.series)
 
     def __eq__(self, other: Union[PitchSeries, list]):
-        if type(other) == list:
+        if isinstance(other, list):
             return self.series == other
         else:
             return self.series == other.series
@@ -204,7 +204,7 @@ class PitchSeries:
 
 
 class Rhythm:
-    def __init__(self, rhythm: List[str], new_tree=True, name=False, parent=None, __style=None):
+    def __init__(self, rhythm: List[str], new_tree=True, name: Union[str, bool] = False, parent=None, __style=None):
         """
         :param rhythm: beat list.
         :param new_tree: If you want to set a new tree of segments and set this one as the parent, set it as True
@@ -332,7 +332,7 @@ class Chord:
     @staticmethod
     def get_colourTian_from_chromaVector(cv):
         return get_chordConsonanceTian_from_chromaVector(cv), \
-               chord_colour_hua_from_chromaVector(cv)
+            chord_colour_hua_from_chromaVector(cv)
 
     @staticmethod
     def get_colourTian_from_chordName(chord_name):
@@ -443,14 +443,16 @@ class Chord:
         canvas.pack(expand=True)
         root.mainloop()
 
-    def play(self, player, duration):
+    def play(self, player, duration=2, bpm=80, velocity=60):
         """
 
         :param player: pygame.midi.Output(int)
         :param duration: beats
+        :param bpm:
+        :param velocity:
         :return: None
         """
-        play_chord(player, self.pitch_group, duration=duration)
+        play_chord(player, self.pitch_group, duration=duration, bpm=bpm, velocity=velocity)
 
     def __len__(self):
         return len(self.pitch_group)
@@ -481,7 +483,7 @@ class Chord:
 class PitchClassSeries:
     def __init__(
             self, series: List[int],
-            new_tree=True, name=False, parent=None):
+            new_tree=True, name: Union[str, bool] = False, parent=None):
         """
         :param series: Series.
         :param new_tree: If you want to set a new tree of segments and set this one as the parent, set it as True
@@ -527,7 +529,7 @@ class PitchClassSeries:
         :param add_pitch: Transposition num.
         :return: Retrograded new PitchClassSeries obj.
         """
-        new_series = reversed(self.series)
+        new_series = list(reversed(self.series))
         if add_pitch == 0:
             return PitchClassSeries(new_series,
                                     new_tree=False, parent=self, name="Retrograde")
@@ -554,7 +556,7 @@ class PitchClassSeries:
         :param axes: An int to invert each pitch in the set.
         :return: Retrograde then Inversion new PitchClassSeries obj.
         """
-        new_series = reversed([2 * axes - pitch for pitch in self.series])
+        new_series = list(reversed([2 * axes - pitch for pitch in self.series]))
         return PitchClassSeries(
             new_series, new_tree=False, parent=self, name=f"RetrogradeInversion{axes} (with pitch_class_series)")
 
